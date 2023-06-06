@@ -30,9 +30,6 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
 
             if ($user) {
-                if ($user->verified == false) {
-                    return response()->json(['message' => 'Email verification required'], 401);
-                }
 
                 if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
@@ -43,7 +40,7 @@ class AuthController extends Controller
                 }
             }
 
-            return response()->json(['message' => 'User does not exists'], 401);
+            return response()->json(['message' => 'User does not exist'], 401);
 
         }
     }

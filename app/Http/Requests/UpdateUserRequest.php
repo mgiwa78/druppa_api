@@ -38,6 +38,7 @@ class UpdateUserRequest extends FormRequest
             'type' => ['sometimes', 'required', Rule::in(['Customer', 'Admin', 'Driver'])],
             'email' => ['sometimes', 'required', 'email'],
             'address' => ['sometimes', 'required'],
+            'profile' => ['sometimes', 'required'],
             'city' => ['sometimes', 'required'],
             'state' => ['sometimes', 'required'],
             'postalCode' => ['sometimes', 'required']

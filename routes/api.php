@@ -24,5 +24,6 @@ Route::post('/customer/register', [AuthController::class, 'customerRegister']);
 
 
 Route::post('/customer/updateProfile', [UserController::class, 'updateProfile']);
+Route::get('customer/fetchProfile/{id}', [UserController::class, 'fetchProfile']);
 
 Route::post('/login', [AuthController::class, 'login']);

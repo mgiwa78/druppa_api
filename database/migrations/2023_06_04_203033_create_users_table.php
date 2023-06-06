@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string("gender");
             $table->string("phone_number")->nullable();
             $table->string("address")->nullable();
+            $table->string("profile")->nullable();
             $table->string("city")->nullable();
             $table->string("state")->nullable();
             $table->rememberToken();
