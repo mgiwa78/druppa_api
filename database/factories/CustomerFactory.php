@@ -35,7 +35,8 @@ class CustomerFactory extends Factory
 
         // Output the unique email
         return [
-            'name' => $this->faker->name($gender),
+            'firstName' => $this->faker->firstName($gender),
+            'lastName' => $this->faker->lastName(),
             'gender' => $gender,
             'type' => $type,
             'title' => $this->faker->title($gender),
