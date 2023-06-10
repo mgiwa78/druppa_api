@@ -19,7 +19,7 @@ class PermissionFactory extends Factory
     {
         # $gender = $this->faker->randomElement((["male", "female"]));
         $permission = $this->faker->randomElement((["Read Custommers", "Edit Custommers", "Add Custommers"]));
-        $status = $this->faker->randomElement((["Active", "Revoked"]));
+        $status = $this->faker->randomElement((["Revoked"]));
 
         return [
             'admin_id' => Admin::factory(),
