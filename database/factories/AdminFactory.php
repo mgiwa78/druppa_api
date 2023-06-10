@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Driver>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Admin>
  */
-class UserFactory extends Factory
+class AdminFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,6 +17,7 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+
         $emails = [];
         $emial_verified = $this->faker->randomElement(([true, false]));
 
@@ -28,24 +29,24 @@ class UserFactory extends Factory
 
 
         do {
-            $email = $this->faker->email();
+            $email = $this->faker->safeEmail();
         } while (in_array($email, $emails));
 
         $emails[] = $email;
 
-        // Output the unique email
         return [
-            'name' => $this->faker->name($gender),
+            'password' => Hash::make("Password"),
+            'type' => 'Admin',
             'gender' => $gender,
-            'type' => $type,
             'title' => $this->faker->title($gender),
-            'email' => $email,
             'phone_number' => $this->faker->phoneNumber(),
-            'email_verified_at' => $emial_verified_at,
-            'address' => $this->faker->streetAddress(),
+            'address' => $this->faker->address(),
+            'firstName' => $this->faker->firstName($gender),
+            'lastName' => $this->faker->lastName(),
+            'email' => $email,
+            'last_login' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'city' => $this->faker->city(),
             'state' => $this->faker->state(),
-            'password' => Hash::make("Password")
         ];
     }
 }

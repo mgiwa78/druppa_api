@@ -10,25 +10,24 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-
+            $table->timestamps();
             $table->string('password');
             $table->string("type");
-            $table->string("title");
-            $table->string("gender");
-            $table->string("phone_number")->nullable();
-            $table->string("address")->nullable();
+            $table->string("firstName");
+            $table->string("phone_number");
+            $table->string("lastName");
+            $table->string("title")->nullable();
+            $table->string("username")->nullable();
+            $table->timestamp("last_login")->nullable();
+            $table->string("gender")->nullable();
+            $table->string("email")->nullable()->unique();
+
             $table->string("profile")->nullable();
             $table->string("city")->nullable();
+            $table->string("address")->nullable();
             $table->string("state")->nullable();
-            $table->rememberToken();
-            $table->timestamps();
-
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('verify_token')->nullable();
         });
     }
 
@@ -37,6 +36,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('drivers');
+        Schema::dropIfExists('admins');
     }
 };

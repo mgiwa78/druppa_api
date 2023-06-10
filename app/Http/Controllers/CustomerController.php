@@ -12,14 +12,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class CustomerController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
+     * Display a listing of thCustomere resource.
+     */public function fetchCustomerProfiles(Customer $customer)
     {
-        //
+        // $pageSize = $size === 10 ? 0 : (int) $size;
+
+        // if ($pageSize) {
+        //     $customer_users = Customer::with('permissions')->paginate();
+        //     return response()->json(['success' => "success", 'customer_users' => $customer_users], 201);
+
+        // } else {
+        $customer_users = Customer::all();
+        return response()->json(['success' => "success", 'customer_users' => $customer_users], 201);
+
+        // }
+
     }
 
     /**
@@ -44,7 +54,7 @@ class UserController extends Controller
     public function fetchProfile($id, Request $request)
     {
 
-        $user = User::find($id);
+        $user = Customer::find($id);
 
         if ($user) {
             return response()->json(['success' => "success", 'user' => $user], 200);
@@ -65,7 +75,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updateProfile(UpdateUserRequest $request, User $user)
+    public function updateProfile(UpdateUserRequest $request, Customer $customer)
     {
 
         $validation = Validator::make($request->all(), [
@@ -76,7 +86,7 @@ class UserController extends Controller
             return response()->json(['error' => $validation->errors()], 422);
         } else {
             $id = $request->id;
-            $user = User::where('id', $id)->first();
+            $user = Customer::where('id', $id)->first();
 
             if ($request->file('profile')) {
 

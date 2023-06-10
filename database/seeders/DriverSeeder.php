@@ -2,19 +2,19 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Driver;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class UserSeeder extends Seeder
+class DriverSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        User::factory()
-            ->count(20)
+        Driver::factory()
+            ->count(15)
             ->create();
     }
 }
