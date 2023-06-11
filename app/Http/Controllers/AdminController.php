@@ -42,6 +42,7 @@ class AdminController extends Controller
             'lastName' => 'required|string|max:150',
             'username' => 'required|string|max:150',
             'password' => 'required|string|max:150',
+            'phone_number' => 'required|string|max:150',
             'email' => 'email|string|max:150',
 
         ]);
@@ -54,11 +55,20 @@ class AdminController extends Controller
             }
             $admin = new Admin;
 
+            if ($request->file('profile')) {
+
+                $file = $request->file('profile');
+                $file_name = hexdec(uniqid()) . '.' . $file->extension();
+                $file->move('./storage/druppa_customer_profiles', $file_name);
+                $admin->profile = '/storage/druppa_customer_profiles/' . $file_name;
+            }
             $admin->firstName = $request->firstName;
             $admin->lastName = $request->lastName;
             $admin->username = $request->username;
             $admin->email = $request->email;
             $admin->type = 'Admin';
+            $admin->phone_number = $request->phone_number;
+
             $admin->password = Hash::make($request->password);
 
 
@@ -106,9 +116,10 @@ class AdminController extends Controller
         $validation = Validator::make($request->all(), [
             'firstName' => 'required|string|max:150',
             'lastName' => 'required|string|max:150',
-            'username' => 'required|string|max:150',
-            'password' => 'required|string|max:150',
-            'email' => 'required|string|max:150',
+            'phone_number' => 'required|string|max:150',
+            'username' => 'required|    string|max:150',
+            'password' => 'string|max:150',
+            'email' => 'string|max:150',
             'gender' => 'string|max:150',
             'title' => 'string|max:150',
             'city' => 'string|max:150',
@@ -125,15 +136,28 @@ class AdminController extends Controller
             // }
 
             $admin = Admin::find($id);
+
             $admin->firstName = $request->firstName;
             $admin->lastName = $request->lastName;
             $admin->username = $request->username;
-            $admin->email = $request->email;
+
+
+            if ($request->file('profile')) {
+
+                $file = $request->file('profile');
+                $file_name = hexdec(uniqid()) . '.' . $file->extension();
+                $file->move('./storage/druppa_customer_profiles', $file_name);
+                $admin->profile = '/storage/druppa_customer_profiles/' . $file_name;
+            }
+
+            $admin->phone_number = $request->phone_number;
+
+            $admin->address = $request->address;
+            $admin->username = $request->username;
             $admin->city = $request->city;
             $admin->state = $request->state;
 
             $admin->type = 'Admin';
-            $admin->password = Hash::make($request->password);
 
 
             if ($request->permissions) {
@@ -145,9 +169,12 @@ class AdminController extends Controller
                     $perm->customer_id = $id;
                     $perm->permission = $permission;
                 }
+                $admin->save();
+            } else {
+                $admin->save();
             }
 
-            $admin->save();
+
 
         }
     }

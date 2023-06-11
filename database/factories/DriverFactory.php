@@ -40,7 +40,7 @@ class DriverFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'gender' => $gender,
             'title' => $this->faker->title($gender),
-
+            'phone_number' => $this->faker->phoneNumber(),
             'type' => 'Driver',
             'city' => $this->faker->city(),
             'state' => $this->faker->state(),

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Driver>
  */
-class UserFactory extends Factory
+class CustomerFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -35,7 +35,8 @@ class UserFactory extends Factory
 
         // Output the unique email
         return [
-            'name' => $this->faker->name($gender),
+            'firstName' => $this->faker->firstName($gender),
+            'lastName' => $this->faker->lastName(),
             'gender' => $gender,
             'type' => $type,
             'title' => $this->faker->title($gender),

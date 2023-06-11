@@ -39,6 +39,8 @@ class AdminFactory extends Factory
             'type' => 'Admin',
             'gender' => $gender,
             'title' => $this->faker->title($gender),
+            'phone_number' => $this->faker->phoneNumber(),
+            'address' => $this->faker->address(),
             'firstName' => $this->faker->firstName($gender),
             'lastName' => $this->faker->lastName(),
             'email' => $email,

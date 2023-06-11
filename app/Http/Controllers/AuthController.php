@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
+use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,34 +16,39 @@ class AuthController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function login(Request $request)
+    public function loginAdmin(Request $request)
     {
         $validation = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
-
         if ($validation->fails()) {
             return response()->json(['error' => $validation->errors()], 422);
-        } else {
+        }
 
-            $user = User::where('email', $request->email)->first();
+        $credentials = $request->only('email', 'password');
+        $user = Admin::where('email', $credentials['email'])->first();
 
-            if ($user) {
+        if ($user) {
+            if (Auth::guard('admin')->attempt($credentials)) {
+                $authenticatedUser = Auth::guard('admin')->user();
+                return response()->json(['user' => $authenticatedUser]);
 
-                if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-
-                    $user = Auth::user();
-                    return response()->json(['user' => $user]);
-                } else {
-                    return response()->json(['message' => 'Invalid login credentials'], 401);
-                }
+            } else {
+                return response()->json(['message' => 'Invalid login credentials'], 401);
             }
 
-            return response()->json(['message' => 'User does not exist'], 401);
 
+            // if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
+            //     $user = Auth::guard('admin')->user();
+            // return response()->json(['user' => $user]);
+            // } else {
+            //     return response()->json(['message' => 'Invalid login credentials'], 401);
+            // }
         }
+
+        return response()->json(['message' => 'User does not exist'], 401);
     }
 
     /**
@@ -63,7 +69,7 @@ class AuthController extends Controller
         if ($validation->fails()) {
             return response()->json(['error' => $validation->errors()], 422);
         } else {
-            $user = new User;
+            $user = new Customer;
             $user->name = $request->name;
             $user->email = $request->email;
             $user->title = $request->title;
@@ -95,35 +101,5 @@ class AuthController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $admin)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $admin)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(User $admin)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $admin)
-    {
-        //
-    }
 }

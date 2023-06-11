@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('password');
             $table->string("type");
             $table->string("firstName");
+            $table->string("phone_number");
             $table->string("lastName");
             $table->string("title")->nullable();
             $table->string("username")->nullable();
@@ -25,6 +26,7 @@ return new class extends Migration {
 
             $table->string("profile")->nullable();
             $table->string("city")->nullable();
+            $table->string("address")->nullable();
             $table->string("state")->nullable();
         });
     }
