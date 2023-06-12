@@ -16,11 +16,12 @@ class AuthController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function loginAdmin(Request $request)
+    public function login(Request $request)
     {
         $validation = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
+            'type' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -28,16 +29,41 @@ class AuthController extends Controller
         }
 
         $credentials = $request->only('email', 'password');
-        $user = Admin::where('email', $credentials['email'])->first();
+        $request->type === 'Admin'?  
+         $user = Admin::where('email', $credentials['email'])->first(): ( 
+         $request->type==='Customer'?   
+         $user = Customer::where('email', $credentials['email'])->first():'');
 
+
+     
         if ($user) {
-            if (Auth::guard('admin')->attempt($credentials)) {
+            if ($request->type === 'Admin'){
+                if (Auth::guard('admin')->attempt($credentials)) {
+                $authenticatedUser = Auth::guard('admin')->user();
+
+                return response()->json(['user' => $authenticatedUser]);
+
+            } else {
+                return response()->json(['message' => 'Invalid login credentials'], 401);
+            }
+            }if ($request->type === 'Customer'){
+                if (Auth::guard('customer')->attempt($credentials)) {
+                $authenticatedUser = Auth::guard('customer')->user();
+                return response()->json(['user' => $authenticatedUser]);
+
+            } else {
+                return response()->json(['message' => 'Invalid Customer login credentials'], 401);
+            }
+            }if ($request->type === 'Driver'){
+                if (Auth::guard('admin')->attempt($credentials)) {
                 $authenticatedUser = Auth::guard('admin')->user();
                 return response()->json(['user' => $authenticatedUser]);
 
             } else {
                 return response()->json(['message' => 'Invalid login credentials'], 401);
             }
+            }
+            
 
 
             // if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
@@ -48,7 +74,7 @@ class AuthController extends Controller
             // }
         }
 
-        return response()->json(['message' => 'User does not exist'], 401);
+        return response()->json(['message' => 'Invalid login credentials'], 401);
     }
 
     /**
