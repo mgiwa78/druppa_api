@@ -28,7 +28,7 @@ class AuthController extends Controller
         if ($validation->fails()) {
             return response()->json(['error' => $validation->errors()], 422);
         }
-$user = null;
+            $user = null;
 
         $credentials = $request->only('email', 'password');
         $request->type === 'Admin'?  
@@ -60,7 +60,7 @@ $user = null;
             }if ($request->type === 'Driver'){
                 if (Auth::guard('driver')->attempt($credentials)) {
 
-                $token =  $user->createToken('druppa::customer')->plainTextToken; 
+                $token =  $user->createToken('druppa::driver')->plainTextToken; 
 
                 $authenticatedUser = Auth::guard('driver')->user();
                 return response()->json(['user' => $authenticatedUser,'token'=>$token]);

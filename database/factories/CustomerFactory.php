@@ -22,7 +22,6 @@ class CustomerFactory extends Factory
 
         $emial_verified_at = $emial_verified ? $this->faker->dateTimeThisDecade('-1 years') : null;
         $gender = $this->faker->randomElement((["male", "female"]));
-        $type = $this->faker->randomElement((["User", "Driver", "Admin"]));
 
 
 
@@ -38,7 +37,7 @@ class CustomerFactory extends Factory
             'firstName' => $this->faker->firstName($gender),
             'lastName' => $this->faker->lastName(),
             'gender' => $gender,
-            'type' => $type,
+            'type' => "Customer",
             'title' => $this->faker->title($gender),
             'email' => $email,
             'phone_number' => $this->faker->phoneNumber(),
