@@ -26,14 +26,14 @@ class UpdateCustomerRequest extends FormRequest
             'firstName' => 'required|string',
             'lastName' => 'required|string',
             'gender' => 'required|string|in:male,female',
-            'type' => 'required|string',
+            'type' => 'string',
             'title' => 'nullable|string',
             'email' => 'required|email|unique:customers,email,' . $this->route('id'),
             'phone_number' => 'required|string',
             'address' => 'required|string',
             'city' => 'required|string',
             'state' => 'required|string',
-            'password' => 'required|string|min:6',
+           
         ];
     }
 }

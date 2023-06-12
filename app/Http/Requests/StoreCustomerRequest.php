@@ -26,7 +26,7 @@ class StoreCustomerRequest extends FormRequest
             'lastName' => 'required|string',
             'gender' => 'required|string|in:male,female',
             'type' => 'string',
-            'title' => 'nullable|string',
+            'title' => 'required|nullable|string',
             'email' => 'required|email|unique:customers',
             'phone_number' => 'required|string',
             'address' => 'required|string',

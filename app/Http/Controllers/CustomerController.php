@@ -46,21 +46,21 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request)
     {
-        $data = $request->validated();
+        $request->validated();
 
         // Create a new customer instance
         $customer = new Customer();
-        $customer->firstName = $data['firstName'];
-        $customer->lastName = $data['lastName'];
-        $customer->gender = $data['gender'];
-        $customer->type = $data['type'];
-        $customer->title = $data['title'];
-        $customer->email = $data['email'];
-        $customer->phone_number = $data['phone_number'];
-        $customer->address = $data['address'];
-        $customer->city = $data['city'];
-        $customer->state = $data['state'];
-        $customer->password = bcrypt($data['password']);
+        $customer->firstName =$request->firstName;
+        $customer->lastName =$request->lastName;
+        $customer->gender =$request->gender;
+        $customer->type = 'Customer';
+        $customer->title =$request->title;
+        $customer->email =$request->email;
+        $customer->phone_number =$request->phone_number;
+        $customer->address =$request->address;
+        $customer->city =$request->city;
+        $customer->state =$request->state;
+        $customer->password = bcrypt($request->password);
 
         $customer->save();
 
@@ -124,17 +124,15 @@ class CustomerController extends Controller
         }
 
         $customer->update([
-            'firstName' => $request->input('firstName'),
-            'lastName' => $request->input('lastName'),
-            'gender' => $request->input('gender'),
-            'type' => $request->input('type'),
-            'title' => $request->input('title'),
-            'email' => $request->input('email'),
-            'phone_number' => $request->input('phone_number'),
-            'address' => $request->input('address'),
-            'city' => $request->input('city'),
-            'state' => $request->input('state'),
-            'password' => Hash::make($request->input('password')),
+            'firstName' => $request->firstName,
+            'lastName' => $request->lastName,
+            'gender' => $request->gender,
+            'title' => $request->title,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'address' => $request->address,
+            'city' => $request->city,
+            'state' => $request->state,
         ]);
 
         return response()->json(['success' => 'Customer updated successfully', 'customer' => $customer], 200);
