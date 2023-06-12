@@ -25,10 +25,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/customer/register', [AuthController::class, 'customerRegister']);
 Route::post('/loginAdmin', [AuthController::class, 'loginAdmin']);
 
-Route::get('fetchCustomerProfile/{id}', [CustomerController::class, 'fetchProfile']);
-Route::post('/customer/updateProfile', [CustomerController::class, 'updateProfile']);
-Route::get('/fetchCustomerProfiles', [CustomerController::class, 'fetchCustomerProfiles']);
+// Route::get('fetchCustomerProfile/{id}', [CustomerController::class, 'fetchProfile']);
+// Route::post('/customer/updateProfile', [CustomerController::class, 'updateProfile']);
+// Route::get('/fetchCustomerProfiles', [CustomerController::class, 'fetchCustomerProfiles']);
 
+Route::group(['prefix' => 'customers'], function () {
+    Route::get('/', [CustomerController::class, 'fetchCustomerProfiles']);
+    Route::get('/{id}', [CustomerController::class, 'fetchProfile']);
+    Route::post('/', [CustomerController::class, 'store']);
+    Route::put('/{id}', [CustomerController::class, 'updateCustomerProfile']);
+    Route::delete('/{id}', [CustomerController::class, 'destroy']);
+});
 
 
 Route::get('/fetchAdminProfiles/{size}', [AdminController::class, 'fetchAdminProfiles']);
