@@ -38,22 +38,23 @@ class AuthController extends Controller
      
         if ($user) {
             if ($request->type === 'Admin'){
-                if (Auth::guard('admin')->attempt($credentials)) {
-                $authenticatedUser = Auth::guard('admin')->user();
+                 if (Auth::guard('admin')->attempt($credentials)) {
+                     $authenticatedUser = Auth::guard('admin')->user();
+                    $token =  $user->createToken('druppa::admin')->plainTextToken; 
+        
+                return response()->json(['user' => $authenticatedUser,'token'=>$token]);
 
-                return response()->json(['user' => $authenticatedUser]);
 
-            } else {
-                return response()->json(['message' => 'Invalid login credentials'], 401);
-            }
+            } 
             }if ($request->type === 'Customer'){
                 if (Auth::guard('customer')->attempt($credentials)) {
                 $authenticatedUser = Auth::guard('customer')->user();
-                return response()->json(['user' => $authenticatedUser]);
 
-            } else {
-                return response()->json(['message' => 'Invalid Customer login credentials'], 401);
-            }
+                $token =  $user->createToken('druppa::customer')->plainTextToken; 
+
+                return response()->json(['user' => $authenticatedUser,'token'=>$token]);
+
+            } 
             }if ($request->type === 'Driver'){
                 if (Auth::guard('admin')->attempt($credentials)) {
                 $authenticatedUser = Auth::guard('admin')->user();

@@ -27,7 +27,7 @@ class CustomerController extends Controller
 
         // } else {
         $customer_users = Customer::all();
-        return response()->json(['success' => "success", 'customer_users' => $customer_users], 201);
+        return response()->json(['success' => "success", 'customer_users' => $customer_users], 200);
 
         // }
 
