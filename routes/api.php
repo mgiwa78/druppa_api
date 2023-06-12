@@ -23,7 +23,6 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function(){    
-
     Route::group(['prefix' => 'customers'], function () {
         Route::get('/', [CustomerController::class, 'fetchCustomerProfiles']);
         Route::get('/{id}', [CustomerController::class, 'fetchProfile']);

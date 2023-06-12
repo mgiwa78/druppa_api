@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\Customer;
+use App\Models\Driver;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,12 +28,13 @@ class AuthController extends Controller
         if ($validation->fails()) {
             return response()->json(['error' => $validation->errors()], 422);
         }
+$user = null;
 
         $credentials = $request->only('email', 'password');
         $request->type === 'Admin'?  
          $user = Admin::where('email', $credentials['email'])->first(): ( 
          $request->type==='Customer'?   
-         $user = Customer::where('email', $credentials['email'])->first():'');
+         $user = Customer::where('email', $credentials['email'])->first(): $user = Driver::where('email', $credentials['email'])->first());
 
 
      
@@ -56,9 +58,12 @@ class AuthController extends Controller
 
             } 
             }if ($request->type === 'Driver'){
-                if (Auth::guard('admin')->attempt($credentials)) {
-                $authenticatedUser = Auth::guard('admin')->user();
-                return response()->json(['user' => $authenticatedUser]);
+                if (Auth::guard('driver')->attempt($credentials)) {
+
+                $token =  $user->createToken('druppa::customer')->plainTextToken; 
+
+                $authenticatedUser = Auth::guard('driver')->user();
+                return response()->json(['user' => $authenticatedUser,'token'=>$token]);
 
             } else {
                 return response()->json(['message' => 'Invalid login credentials'], 401);
