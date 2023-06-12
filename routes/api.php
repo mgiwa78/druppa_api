@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DriverController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -38,4 +39,16 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::put('/{id}', [AdminController::class, 'edit']);
         Route::delete('/{id}', [AdminController::class, 'destroy']);
     });
+
+    Route::group(['prefix' => 'drivers'], function () {
+    Route::get('/', [DriverController::class, 'fetchDriverProfiles']);
+    Route::post('/', [DriverController::class, 'store']);
+    Route::get('/{id}', [DriverController::class, 'show']);
+    Route::put('/{id}', [DriverController::class, 'updateDriverProfile']);
+    Route::delete('/{id}', [DriverController::class, 'destroy']);
 });
+});
+
+
+
+

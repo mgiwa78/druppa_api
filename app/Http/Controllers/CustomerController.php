@@ -17,7 +17,8 @@ class CustomerController extends Controller
 {
     /**
      * Display a listing of thCustomere resource.
-     */public function fetchCustomerProfiles(Customer $customer)
+     */
+    public function fetchCustomerProfiles(Customer $customer)
     {
         // $pageSize = $size === 10 ? 0 : (int) $size;
 
