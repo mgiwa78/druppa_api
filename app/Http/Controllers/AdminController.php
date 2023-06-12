@@ -15,9 +15,9 @@ class AdminController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function fetchAdminProfiles($size)
+    public function fetchAdminProfiles()
     {
-        $pageSize = $size === 10 ? 0 : (int) $size;
+        $pageSize = 10;
 
         if ($pageSize) {
             $admin_users = Admin::with('permissions')->paginate($pageSize);
