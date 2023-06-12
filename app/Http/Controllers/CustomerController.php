@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
 {
@@ -37,15 +38,33 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        //
+        return view('customers.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store($request)
+    public function store(StoreCustomerRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        // Create a new customer instance
+        $customer = new Customer();
+        $customer->firstName = $data['firstName'];
+        $customer->lastName = $data['lastName'];
+        $customer->gender = $data['gender'];
+        $customer->type = $data['type'];
+        $customer->title = $data['title'];
+        $customer->email = $data['email'];
+        $customer->phone_number = $data['phone_number'];
+        $customer->address = $data['address'];
+        $customer->city = $data['city'];
+        $customer->state = $data['state'];
+        $customer->password = bcrypt($data['password']);
+
+        $customer->save();
+
+        return response()->json(['success' => 'Customer created successfully'], 201);
     }
 
     /**
@@ -67,9 +86,58 @@ class CustomerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($customer)
+    public function edit($id)
     {
-        //
+        $customer = Customer::findOrFail($id);
+        return view('customers.edit', compact('customer'));
+    }
+
+    /**
+     * Update the specified Customer resource in storage.
+     */
+    // public function updateCustomerProfile(UpdateCustomerRequest $request, Customer $customer)
+
+    // {
+    //     $customer->id = $request->id;
+    //     $customer->firstName = $request->firstName;
+    //     $customer->lastName = $request->lastName;
+    //     $customer->gender = $request->gender;
+    //     $customer->type = $request->type;
+    //     $customer->title = $request->title;
+    //     $customer->email = $request->email;
+    //     $customer->phone_number = $request->phone_number;
+    //     $customer->address = $request->address;
+    //     $customer->city = $request->city;
+    //     $customer->state = $request->state;
+    //     $customer->password = bcrypt($request->password); // Assuming you want to hash the password
+
+    //     $customer->save();
+
+    //     return response()->json(['success' => 'Customer profile updated successfully', 'customer' => $customer], 200);
+    // }
+    public function updateCustomerProfile(UpdateCustomerRequest $request, $id)
+    {
+        $customer = Customer::find($id);
+
+        if (!$customer) {
+            return response()->json(['error' => 'Customer not found'], 404);
+        }
+
+        $customer->update([
+            'firstName' => $request->input('firstName'),
+            'lastName' => $request->input('lastName'),
+            'gender' => $request->input('gender'),
+            'type' => $request->input('type'),
+            'title' => $request->input('title'),
+            'email' => $request->input('email'),
+            'phone_number' => $request->input('phone_number'),
+            'address' => $request->input('address'),
+            'city' => $request->input('city'),
+            'state' => $request->input('state'),
+            'password' => Hash::make($request->input('password')),
+        ]);
+
+        return response()->json(['success' => 'Customer updated successfully', 'customer' => $customer], 200);
     }
 
     /**
@@ -112,8 +180,16 @@ class CustomerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($customer)
+    public function destroy($id)
     {
-        //
+        $customer = Customer::find($id);
+
+        if (!$customer) {
+            return response()->json(['error' => 'Customer not found'], 404);
+        }
+
+        $customer->delete();
+
+        return response()->json(['success' => 'Customer deleted successfully'], 200);
     }
 }
