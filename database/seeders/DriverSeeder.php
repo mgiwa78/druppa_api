@@ -13,9 +13,6 @@ class DriverSeeder extends Seeder
      */
     public function run(): void
     {
-        Driver::factory()
-            ->count(20)
-            ->hasDeliveries(8)
-            ->create();
+
     }
 }

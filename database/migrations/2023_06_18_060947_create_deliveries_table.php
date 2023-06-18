@@ -14,6 +14,7 @@ return new class extends Migration {
 
             $table->id();
             $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('customer_order_id');
 
             $table->string('tracking_number');
             $table->string('status')->default('Pending');
@@ -30,6 +31,8 @@ return new class extends Migration {
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('cascade');
+            $table->foreign('customer_order_id')->references('id')->on('customer_orders')->onDelete('cascade');
+
         });
     }
 

@@ -31,7 +31,7 @@ class DeliveryFactory extends Factory
             'city' => $this->faker->city(),
             'delivery_date' => $this->faker->dateTimeBetween('-1 month', '+1 month'),
             'driver_id' => Driver::factory(),
-            'delivery' => $this->faker->uuid(),
+            'customer_order_id' => CustomerOrder::factory(),
         ];
     }
 }

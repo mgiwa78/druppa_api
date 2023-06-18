@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('customer_orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer_id');
-            $table->string('delivery_id');
+            $table->unsignedBigInteger('payment_id');
             $table->string('request_title');
             $table->text('request_description');
             $table->decimal('total_amount', 10, 2);
@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->text('shipment_details');
             $table->timestamps();
 
+            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('restrict');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('restrict');
         });
     }
