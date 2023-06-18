@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             DriverSeeder::class,
             AdminSeeder::class,
             PermissionSeeder::class,
+            DeliveryRecordsTableSeeder::class,
         ]);
     }
 }

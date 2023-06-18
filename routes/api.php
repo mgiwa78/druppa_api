@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,16 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/', [CustomerController::class, 'store']);
         Route::put('/{id}', [CustomerController::class, 'updateCustomerProfile']);
         Route::delete('/{id}', [CustomerController::class, 'destroy']);
+
+        // Fetch delivery records for a particular customer
+        Route::get('/{id}/deliveries', [DeliveryController::class, 'fetchDeliveries']);
+
+        // CRUD routes for deliveries
+        Route::get('/{customerId}/deliveries', [DeliveryController::class, 'index']);
+        Route::post('/{customerId}/deliveries', [DeliveryController::class, 'store']);
+        Route::get('/{customerId}/deliveries/{id}', [DeliveryController::class, 'show']);
+        Route::put('/{customerId}/deliveries/{id}', [DeliveryController::class, 'update']);
+        Route::delete('/{customerId}/deliveries/{id}', [DeliveryController::class, 'destroy']);
     });
 
     Route::group(['prefix' => 'admin'], function () {
@@ -40,12 +51,12 @@ Route::middleware('auth:sanctum')->group(function(){
     });
 
     Route::group(['prefix' => 'drivers'], function () {
-    Route::get('/', [DriverController::class, 'fetchDriverProfiles']);
-    Route::post('/', [DriverController::class, 'store']);
-    Route::get('/{id}', [DriverController::class, 'show']);
-    Route::put('/{id}', [DriverController::class, 'updateDriverProfile']);
-    Route::delete('/{id}', [DriverController::class, 'destroy']);
-});
+        Route::get('/', [DriverController::class, 'fetchDriverProfiles']);
+        Route::post('/', [DriverController::class, 'store']);
+        Route::get('/{id}', [DriverController::class, 'show']);
+        Route::put('/{id}', [DriverController::class, 'updateDriverProfile']);
+        Route::delete('/{id}', [DriverController::class, 'destroy']);
+    });
 });
 
 
