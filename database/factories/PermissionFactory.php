@@ -17,10 +17,35 @@ class PermissionFactory extends Factory
      */
     public function definition(): array
     {
+        $perms = [];
         # $gender = $this->faker->randomElement((["male", "female"]));
-        $permission = $this->faker->randomElement((["Read Custommers", "Edit Custommers", "Add Custommers"]));
         $status = $this->faker->randomElement((["Revoked"]));
 
+        do {
+            $permission = $this->faker->randomElement(([
+                "Read Custommers",
+                "Edit Custommers",
+                "Add Custommers",
+                "Read Drivers",
+                "Edit Drivers",
+                "Add Drivers",
+                "Read Deliveries",
+                "Edit Deliveries",
+                "Add Deliveries",
+                "Read Admin",
+                "Edit Admin",
+                "Add Admin",
+                "Read Order",
+                "Edit Order",
+                "Add Order",
+                "Read Payments",
+                "Edit Payments",
+                "Add Payments"
+            ]));
+
+        } while (in_array($permission, $perms));
+
+        $perms[] = $permission;
         return [
             'admin_id' => Admin::factory(),
             'permission' => $permission,

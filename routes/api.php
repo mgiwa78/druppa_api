@@ -3,9 +3,12 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\RequestController;
 use App\Http\Controllers\UserController;
+use App\Models\CustomerOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,29 +26,39 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function(){    
+Route::middleware('auth:sanctum')->group(function () {
+
     Route::group(['prefix' => 'customers'], function () {
         Route::get('/', [CustomerController::class, 'fetchCustomerProfiles']);
         Route::get('/{id}', [CustomerController::class, 'fetchProfile']);
         Route::post('/', [CustomerController::class, 'store']);
         Route::put('/{id}', [CustomerController::class, 'updateCustomerProfile']);
         Route::delete('/{id}', [CustomerController::class, 'destroy']);
-
-        // Fetch delivery records for a particular customer
-        Route::get('/{id}/deliveries', [DeliveryController::class, 'fetchDeliveries']);
-
-        // CRUD routes for deliveries
-        Route::get('/{customerId}/deliveries', [DeliveryController::class, 'index']);
-        Route::post('/{customerId}/deliveries', [DeliveryController::class, 'store']);
-        Route::get('/{customerId}/deliveries/{id}', [DeliveryController::class, 'show']);
-        Route::put('/{customerId}/deliveries/{id}', [DeliveryController::class, 'update']);
-        Route::delete('/{customerId}/deliveries/{id}', [DeliveryController::class, 'destroy']);
     });
+
+    Route::group(['prefix' => 'deliveries'], function () {
+        Route::get('/', [DeliveryController::class, 'index']);
+        Route::post('/', [DeliveryController::class, 'store']);
+        Route::get('/{id}', [DeliveryController::class, 'show']);
+
+        Route::patch('/{id}', [DeliveryController::class, 'update']);
+        Route::delete('/{id}', [DeliveryController::class, 'destroy']);
+        Route::get('customer/{id}', [DeliveryController::class, 'getCustomerDelivery']);
+
+    });
+
+    Route::group(['prefix' => 'customerorders'], function () {
+        Route::get('/', [CustomerOrderController::class, 'index']);
+        Route::get('/{id}', [CustomerOrderController::class, 'show']);
+        Route::get('/customer/{id}', [CustomerOrderController::class, 'showCustomerOrder']);
+    });
+
 
     Route::group(['prefix' => 'admin'], function () {
         Route::get('/', [AdminController::class, 'fetchAdminProfiles']);
         Route::get('/{id}', [AdminController::class, 'show']);
         Route::post('/', [AdminController::class, 'create']);
+
         Route::put('/{id}', [AdminController::class, 'edit']);
         Route::delete('/{id}', [AdminController::class, 'destroy']);
     });
@@ -53,12 +66,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::group(['prefix' => 'drivers'], function () {
         Route::get('/', [DriverController::class, 'fetchDriverProfiles']);
         Route::post('/', [DriverController::class, 'store']);
+
         Route::get('/{id}', [DriverController::class, 'show']);
         Route::put('/{id}', [DriverController::class, 'updateDriverProfile']);
         Route::delete('/{id}', [DriverController::class, 'destroy']);
     });
 });
-
-
-
-

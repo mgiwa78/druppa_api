@@ -2,20 +2,21 @@
 
 namespace Database\Seeders;
 
-use App\Models\Customer;
-use App\Models\User;
+use App\Models\CustomerOrder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class CustomerSeeder extends Seeder
+class CustomerOrderSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Customer::factory()
-            ->count(5)
-            ->create();
+        CustomerOrder::factory()
+            ->count(30)
+            ->hasDelivery(1)
+            ->create()
+        ;
     }
 }

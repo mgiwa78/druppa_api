@@ -2,20 +2,20 @@
 
 namespace Database\Seeders;
 
-use App\Models\Customer;
-use App\Models\User;
+use App\Models\Warehouse;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class CustomerSeeder extends Seeder
+class WarehouseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Customer::factory()
-            ->count(5)
+        Warehouse::factory()
+            ->count(10)
+            ->hasInventory(3)
             ->create();
     }
 }

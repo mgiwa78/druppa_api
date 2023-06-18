@@ -14,7 +14,7 @@ class Driver extends Authenticatable
         'firstName',
         'lastName',
         'email',
-        'gender' ,
+        'gender',
         'title',
         'phone_number',
         'type',
@@ -28,4 +28,9 @@ class Driver extends Authenticatable
         'insurance',
         'password',
     ];
+
+    public function deliveries()
+    {
+        return $this->hasMany((Delivery::class));
+    }
 }

@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreDeliveryRequest;
-use App\Http\Requests\UpdateDeliveryRequest;
+use App\Http\Requests\StoreWarehouseRequest;
+use App\Http\Requests\UpdateWarehouseRequest;
 use App\Models\Customer;
-use App\Models\Delivery;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-class DeliveryController extends Controller
+class WarehouseController extends Controller
 {
 
 
-    public function getCustomerDelivery($id)
+    public function getCustomerWarehouse($customerId)
     {
-        $deliveries = Delivery::where('customer_id', '=', $id)
-            ->get();
+        $customer = Customer::findOrFail($customerId);
+        $deliveries = $customer->deliveries()->get();
 
         return response()->json([
             'data' => $deliveries,
@@ -24,53 +24,59 @@ class DeliveryController extends Controller
     }
     public function index()
     {
-        $deliveries = Delivery::all();
+        $deliveries = Warehouse::all();
         return response()->json(['success' => "success", 'data' => $deliveries], 200);
 
     }
 
-    public function store(StoreDeliveryRequest $request)
+    public function store(StoreWarehouseRequest $request)
     {
         $request->validated();
 
-        $delivery = new Delivery;
+        $customerID = $request->customer;
 
+        $delivery = new Warehouse();
+
+        // Generate a unique delivery_id using UUID
+
+
+        // Set delivery attributes from the request data
+        $delivery->customer_id = $customerID;
+        $delivery->tracking_number = Str::uuid();
         $delivery->origin = $request->origin;
-        $delivery->city = $request->city;
         $delivery->destination = $request->destination;
-        $delivery->pickup_date = $request->pickup_date;
-        $delivery->customer_id = $request->customer_id;
-        $delivery->tracking_number = $request->tracking_number;
-        $delivery->state = $request->state;
 
+        $delivery->pickup_date = $request->pickup_date;
         $delivery->delivery_date = $request->delivery_date;
-        $delivery->driver_id = $request->driver_id;
+        $delivery->delivery_by = $request->delivery_by;
 
 
         $delivery->save();
 
         return response()->json([
-            "data" => $delivery
+            'data' => $delivery,
         ], 201);
     }
 
     public function show($id)
     {
-        $deliveries = Delivery::find($id);
+        $deliveries = Warehouse::find($id);
         return response()->json(['success' => "success", 'data' => $deliveries], 200);
 
     }
 
-    public function update(UpdateDeliveryRequest $request, $id)
+    public function update(UpdateWarehouseRequest $request, $id)
     {
         $request->validated();
 
-        $delivery = Delivery::find($id);
+        $delivery = Warehouse::find($id);
+
         $delivery->origin = $request->origin;
         $delivery->destination = $request->destination;
 
         $delivery->delivery_date = $request->delivery_date;
-        $delivery->driver_id = $request->driver_id;
+        $delivery->delivery_by = $request->delivery_by;
+
 
         $delivery->save();
 
@@ -81,11 +87,11 @@ class DeliveryController extends Controller
 
     public function destroy($id)
     {
-        $delivery = Delivery::find($id);
+        $delivery = Warehouse::find($id);
         $delivery->delete();
 
         return response()->json([
-            'message' => 'Delivery record deleted successfully.',
+            'message' => 'Warehouse record deleted successfully.',
         ]);
     }
 }

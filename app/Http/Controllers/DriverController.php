@@ -16,7 +16,7 @@ class DriverController extends Controller
     public function fetchDriverProfiles()
     {
         $drivers = Driver::all();
-        return response()->json(['success' => 'success', 'drivers' => $drivers], 200);
+        return response()->json(['success' => 'success', 'data' => $drivers], 200);
     }
 
     /**
@@ -61,12 +61,12 @@ class DriverController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id, Request $request)
+    public function show($id)
     {
         $driver = Driver::find($id);
 
         if ($driver) {
-            return response()->json(['success' => "success", 'driver' => $driver], 200);
+            return response()->json(['success' => "success", 'data' => $driver], 200);
         } else {
             return response()->json(['error' => "error", 'message' => "No driver found"], 200);
         }
@@ -115,7 +115,7 @@ class DriverController extends Controller
                 'password' => bcrypt($validatedData['password']),
             ]);
 
-            return response()->json(['message' => 'Driver updated successfully', 'driver' => $driver]);
+            return response()->json(['message' => 'Driver updated successfully', 'data' => $driver]);
         } else {
             return response()->json(['error' => 'error', 'message' => 'No driver found'], 200);
         }

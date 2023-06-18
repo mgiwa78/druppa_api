@@ -16,8 +16,9 @@ class DatabaseSeeder extends Seeder
             CustomerSeeder::class,
             DriverSeeder::class,
             AdminSeeder::class,
-            PermissionSeeder::class,
-            DeliveryRecordsTableSeeder::class,
+            DeliverySeeder::class,
+            WarehouseSeeder::class,
+            CustomerOrderSeeder::class,
         ]);
     }
 }
