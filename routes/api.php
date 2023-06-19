@@ -6,6 +6,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\UserController;
 use App\Models\CustomerOrder;
@@ -44,6 +45,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/{id}', [DeliveryController::class, 'update']);
         Route::delete('/{id}', [DeliveryController::class, 'destroy']);
         Route::get('customer/{id}', [DeliveryController::class, 'getCustomerDelivery']);
+
+    });
+    Route::group(['prefix' => 'inventory'], function () {
+        Route::get('/', [InventoryController::class, 'index']);
+        Route::post('/', [InventoryController::class, 'store']);
+        Route::get('/{id}', [InventoryController::class, 'show']);
+
+        Route::patch('/{id}', [InventoryController::class, 'update']);
+        Route::delete('/{id}', [InventoryController::class, 'destroy']);
+        Route::get('customer/{id}', [InventoryController::class, 'getCustomerDelivery']);
 
     });
 

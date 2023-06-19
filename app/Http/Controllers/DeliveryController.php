@@ -24,7 +24,7 @@ class DeliveryController extends Controller
     }
     public function index()
     {
-        $deliveries = Delivery::all();
+        $deliveries = Delivery::paginate(10);
         return response()->json(['success' => "success", 'data' => $deliveries], 200);
 
     }
