@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::patch('/{id}', [InventoryController::class, 'update']);
         Route::delete('/{id}', [InventoryController::class, 'destroy']);
-        Route::get('customer/{id}', [InventoryController::class, 'getCustomerDelivery']);
+        Route::get('customer/{id}', [InventoryController::class, 'getCustomerInventory']);
 
     });
 

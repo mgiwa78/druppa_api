@@ -24,8 +24,35 @@ class DeliveryController extends Controller
     }
     public function index()
     {
-        $deliveries = Delivery::paginate(10);
-        return response()->json(['success' => "success", 'data' => $deliveries], 200);
+        $deliveries = Delivery::with('driver')->with("customer")->paginate();
+
+        $responseData = $deliveries->items();
+        $responseData = collect($responseData)->map(function ($delivery) {
+            return [
+                'id' => $delivery->id,
+                'customer' => $delivery->customer,
+                'customer_order_id' => $delivery->customer_order_id,
+                'tracking_number' => $delivery->tracking_number,
+                'status' => $delivery->status,
+                'state' => $delivery->state,
+                'city' => $delivery->city,
+                'origin' => $delivery->origin,
+                'destination' => $delivery->destination,
+                'pickup_date' => $delivery->pickup_date,
+                'delivery_date' => $delivery->delivery_date,
+                'driver' => $delivery->driver
+            ];
+        });
+
+        $paginatedResponse = [
+            'current_page' => $deliveries->currentPage(),
+            'per_page' => $deliveries->perPage(),
+            'total' => $deliveries->total(),
+            'last_page' => $deliveries->lastPage(),
+            'data' => $responseData,
+        ];
+
+        return response()->json(['success' => true, 'data' => $paginatedResponse], 200);
 
     }
 
