@@ -194,4 +194,22 @@ class AdminController extends Controller
     {
         //
     }
+
+    /**
+     * Get the count of drivers.
+     */
+    public function getDriverCount()
+    {
+        $driverCount = Admin::where('type', 'Driver')->count();
+        return response()->json(['success' => "success", 'count' => $driverCount], 200);
+    }
+
+    /**
+     * Get the count of admins.
+     */
+    public function getAdminCount()
+    {
+        $adminCount = Admin::where('type', 'Admin')->count();
+        return response()->json(['success' => "success", 'count' => $adminCount], 200);
+    }
 }

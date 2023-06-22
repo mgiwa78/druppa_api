@@ -51,16 +51,16 @@ class CustomerController extends Controller
 
         // Create a new customer instance
         $customer = new Customer();
-        $customer->firstName =$request->firstName;
-        $customer->lastName =$request->lastName;
-        $customer->gender =$request->gender;
+        $customer->firstName = $request->firstName;
+        $customer->lastName = $request->lastName;
+        $customer->gender = $request->gender;
         $customer->type = 'Customer';
-        $customer->title =$request->title;
-        $customer->email =$request->email;
-        $customer->phone_number =$request->phone_number;
-        $customer->address =$request->address;
-        $customer->city =$request->city;
-        $customer->state =$request->state;
+        $customer->title = $request->title;
+        $customer->email = $request->email;
+        $customer->phone_number = $request->phone_number;
+        $customer->address = $request->address;
+        $customer->city = $request->city;
+        $customer->state = $request->state;
         $customer->password = bcrypt($request->password);
 
         $customer->save();
@@ -81,7 +81,6 @@ class CustomerController extends Controller
         } else {
             return response()->json(['error' => "error", 'message' => "No User found"], 200);
         }
-
     }
 
     /**
@@ -171,9 +170,7 @@ class CustomerController extends Controller
             $user->state = $request->state;
 
             $user->save();
-
         }
-
     }
 
     /**
@@ -190,5 +187,14 @@ class CustomerController extends Controller
         $customer->delete();
 
         return response()->json(['success' => 'Customer deleted successfully'], 200);
+    }
+
+    /**
+     * Get the count of customers.
+     */
+    public function getCustomerCount()
+    {
+        $count = Customer::count();
+        return response()->json(['count' => $count], 200);
     }
 }

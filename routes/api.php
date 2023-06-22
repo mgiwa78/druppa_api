@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
+// Route::middleware('auth:sanctum')->group(function () {
 
     Route::group(['prefix' => 'customers'], function () {
         Route::get('/', [CustomerController::class, 'fetchCustomerProfiles']);
@@ -35,6 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [CustomerController::class, 'store']);
         Route::put('/{id}', [CustomerController::class, 'updateCustomerProfile']);
         Route::delete('/{id}', [CustomerController::class, 'destroy']);
+
+        Route::get('/customers/count', [CustomerController::class, 'getCustomerCount']);
     });
 
     Route::group(['prefix' => 'deliveries'], function () {
@@ -46,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [DeliveryController::class, 'destroy']);
         Route::get('customer/{id}', [DeliveryController::class, 'getCustomerDelivery']);
 
+        Route::get('/deliveries/count', [DeliveryController::class, 'getDeliveryCount']);
     });
     Route::group(['prefix' => 'inventory'], function () {
         Route::get('/', [InventoryController::class, 'index']);
@@ -56,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [InventoryController::class, 'destroy']);
         Route::get('customer/{id}', [InventoryController::class, 'getCustomerInventory']);
 
+        Route::get('/inventory/count', [InventoryController::class, 'getInventoryCount']);
     });
 
     Route::group(['prefix' => 'customerorders'], function () {
@@ -72,6 +76,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::put('/{id}', [AdminController::class, 'edit']);
         Route::delete('/{id}', [AdminController::class, 'destroy']);
+        
+        Route::get('/admins/count', [AdminController::class, 'getAdminCount']);
     });
 
     Route::group(['prefix' => 'drivers'], function () {
@@ -81,5 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [DriverController::class, 'show']);
         Route::put('/{id}', [DriverController::class, 'updateDriverProfile']);
         Route::delete('/{id}', [DriverController::class, 'destroy']);
+
+        Route::get('/drivers/count', [DriverController::class, 'getDriverCount']);
     });
-});
+// });

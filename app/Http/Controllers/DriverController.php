@@ -135,4 +135,13 @@ class DriverController extends Controller
             return response()->json(['error' => 'Driver not found']);
         }
     }
+
+    /**
+     * Get all drivers count.
+     */
+    public function getDriverCount()
+    {
+        $count = Driver::count();
+        return response()->json(['count' => $count], 200);
+    }
 }

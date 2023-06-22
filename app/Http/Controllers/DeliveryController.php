@@ -53,7 +53,6 @@ class DeliveryController extends Controller
         ];
 
         return response()->json(['success' => true, 'data' => $paginatedResponse], 200);
-
     }
 
     public function store(StoreDeliveryRequest $request)
@@ -85,7 +84,6 @@ class DeliveryController extends Controller
     {
         $deliveries = Delivery::find($id);
         return response()->json(['success' => "success", 'data' => $deliveries], 200);
-
     }
 
     public function update(UpdateDeliveryRequest $request, $id)
@@ -114,5 +112,11 @@ class DeliveryController extends Controller
         return response()->json([
             'message' => 'Delivery record deleted successfully.',
         ]);
+    }
+
+    public function getDeliveryCount()
+    {
+        $count = Delivery::count();
+        return response()->json(['count' => $count], 200);
     }
 }

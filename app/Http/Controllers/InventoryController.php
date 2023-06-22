@@ -77,7 +77,6 @@ class InventoryController extends Controller
     {
         $inventries = Inventory::find($id);
         return response()->json(['success' => "success", 'data' => $inventries], 200);
-
     }
 
     public function update(Request $request, $id)
@@ -104,5 +103,11 @@ class InventoryController extends Controller
         return response()->json([
             'message' => 'Inventory record deleted successfully.',
         ]);
+    }
+
+    public function getInventoryCount()
+    {
+        $count = Inventory::count();
+        return response()->json(['count' => $count], 200);
     }
 }
