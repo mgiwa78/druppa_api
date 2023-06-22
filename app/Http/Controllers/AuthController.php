@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCustomerRequest;
 use App\Models\Admin;
 use App\Models\Customer;
 use App\Models\Driver;
@@ -28,48 +29,50 @@ class AuthController extends Controller
         if ($validation->fails()) {
             return response()->json(['error' => $validation->errors()], 422);
         }
-            $user = null;
+        $user = null;
 
         $credentials = $request->only('email', 'password');
-        $request->type === 'Admin'?  
-         $user = Admin::where('email', $credentials['email'])->first(): ( 
-         $request->type==='Customer'?   
-         $user = Customer::where('email', $credentials['email'])->first(): $user = Driver::where('email', $credentials['email'])->first());
+        $request->type === 'Admin' ?
+            $user = Admin::where('email', $credentials['email'])->first() : (
+                $request->type === 'Customer' ?
+                $user = Customer::where('email', $credentials['email'])->first() : $user = Driver::where('email', $credentials['email'])->first());
 
 
-     
+
         if ($user) {
-            if ($request->type === 'Admin'){
-                 if (Auth::guard('admin')->attempt($credentials)) {
-                     $authenticatedUser = Auth::guard('admin')->user();
-                    $token =  $user->createToken('druppa::admin')->plainTextToken; 
-        
-                return response()->json(['user' => $authenticatedUser,'token'=>$token]);
+            if ($request->type === 'Admin') {
+                if (Auth::guard('admin')->attempt($credentials)) {
+                    $authenticatedUser = Auth::guard('admin')->user();
+                    $token = $user->createToken('druppa::admin')->plainTextToken;
+
+                    return response()->json(['user' => $authenticatedUser, 'token' => $token]);
 
 
-            } 
-            }if ($request->type === 'Customer'){
+                }
+            }
+            if ($request->type === 'Customer') {
                 if (Auth::guard('customer')->attempt($credentials)) {
-                $authenticatedUser = Auth::guard('customer')->user();
+                    $authenticatedUser = Auth::guard('customer')->user();
 
-                $token =  $user->createToken('druppa::customer')->plainTextToken; 
+                    $token = $user->createToken('druppa::customer')->plainTextToken;
 
-                return response()->json(['user' => $authenticatedUser,'token'=>$token]);
+                    return response()->json(['user' => $authenticatedUser, 'token' => $token]);
 
-            } 
-            }if ($request->type === 'Driver'){
+                }
+            }
+            if ($request->type === 'Driver') {
                 if (Auth::guard('driver')->attempt($credentials)) {
 
-                $token =  $user->createToken('druppa::driver')->plainTextToken; 
+                    $token = $user->createToken('druppa::driver')->plainTextToken;
 
-                $authenticatedUser = Auth::guard('driver')->user();
-                return response()->json(['user' => $authenticatedUser,'token'=>$token]);
+                    $authenticatedUser = Auth::guard('driver')->user();
+                    return response()->json(['user' => $authenticatedUser, 'token' => $token]);
 
-            } else {
-                return response()->json(['message' => 'Invalid login credentials'], 401);
+                } else {
+                    return response()->json(['message' => 'Invalid login credentials'], 401);
+                }
             }
-            }
-            
+
 
 
             // if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
@@ -86,43 +89,36 @@ class AuthController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function customerRegister(Request $request)
+    public function customerRegister(StoreCustomerRequest $request)
     {
-        $validation = Validator::make($request->all(), [
-            'name' => 'required|max:150',
-            'email' => 'required|unique:users|email|max:100',
-            'password' => 'required',
-            'title' => 'required',
-            'gender' => 'required',
-            'phone_number' => 'required',
-            'type' => 'required',
-        ]);
-
-        if ($validation->fails()) {
-            return response()->json(['error' => $validation->errors()], 422);
-        } else {
-            $user = new Customer;
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->title = $request->title;
-            $user->gender = $request->gender;
-            $user->phone_number = $request->phone_number;
-            $user->password = Hash::make($request->password);
-            $user->type = $request->type;
-
-            $user->save();
+        $request->validated();
 
 
 
-            $token = $user->createToken('druppa')->plainTextToken;
+        $user = new Customer;
+        $user->firstName = $request->firstName;
+        $user->lastName = $request->lastName;
+        $user->state = $request->state;
+        $user->city = $request->city;
+        $user->email = $request->email;
+        $user->title = $request->title;
+        $user->gender = $request->gender;
+        $user->phone_number = $request->phone_number;
+        $user->password = Hash::make($request->password);
+        $user->type = $request->type;
 
-            $codex = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), -63);
-            $user->verify_token = Str::random(40) . $codex . time();
-            $user->save();
+        $user->save();
 
 
-            return response()->json(['token' => $token, 'user' => $user, 'message' => 'You have successfully created an account'], 200);
-        }
+
+        $token = $user->createToken('druppa')->plainTextToken;
+
+        $codex = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), -63);
+        $user->verify_token = Str::random(40) . $codex . time();
+        $user->save();
+
+
+        return response()->json(['token' => $token, 'user' => $user, 'message' => 'You have successfully created an account'], 200);
     }
 
     /**
