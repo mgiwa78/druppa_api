@@ -44,6 +44,7 @@ class DriverFactory extends Factory
             'type' => 'Driver',
             'city' => $this->faker->city(),
             'state' => $this->faker->state(),
+            'isActive' => $this->faker->randomElement([false, true]),
             'licenseNumber' => $this->faker->randomNumber(),
             'licenseExpiration' => $this->faker->date(),
             'vehicleMake' => $this->faker->word(),

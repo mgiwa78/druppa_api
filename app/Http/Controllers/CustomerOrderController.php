@@ -25,6 +25,46 @@ class CustomerOrderController extends Controller
         //
     }
 
+
+    public function showPendingOrders($size)
+    {
+        if ($size) {
+            $customerOrders = CustomerOrder::where('status', '=', 'Pending')->with('customer')->orderByDesc('created_at')->paginate($size);
+
+        } else {
+            $customerOrders = CustomerOrder::where('status', '=', 'Pending')->with('customer')->orderByDesc('created_at')->paginate();
+
+        }
+
+        $responseData = $customerOrders->items();
+        $responseData = collect($responseData)->map(function ($customerOrder) {
+            return [
+                'id' => $customerOrder->id,
+                'customer' => $customerOrder->customer,
+                'payment_id' => $customerOrder->payment_id,
+                'request_title' => $customerOrder->request_title,
+                'request_description' => $customerOrder->starequest_descriptiontus,
+                'total_amount' => $customerOrder->total_amount,
+                'payment_method' => $customerOrder->payment_method,
+                'payment_status' => $customerOrder->payment_status,
+                'shipment_type' => $customerOrder->shipment_type,
+                'status' => $customerOrder->status,
+                'drop_off' => $customerOrder->drop_off,
+                'pick_up' => $customerOrder->pick_up,
+                'created_at' => $customerOrder->created_at,
+                'shipment_details' => $customerOrder->shipment_details,
+            ];
+        });
+
+        $paginatedResponse = [
+            'current_page' => $customerOrders->currentPage(),
+            'per_page' => $customerOrders->perPage(),
+            'total' => $customerOrders->total(),
+            'last_page' => $customerOrders->lastPage(),
+            'data' => $responseData,
+        ];
+        return response()->json(['success' => "success", 'data' => $paginatedResponse], 200);
+    }
     /**
      * Store a newly created resource in storage.
      */

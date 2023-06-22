@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateDeliveryRequest;
 use App\Models\Customer;
 use App\Models\Delivery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class DeliveryController extends Controller
@@ -108,6 +109,12 @@ class DeliveryController extends Controller
     public function show($id)
     {
         $deliveries = Delivery::find($id);
+        return response()->json(['success' => "success", 'data' => $deliveries], 200);
+    }
+
+    public function showPending()
+    {
+        $deliveries = Delivery::where('status', '=', 'Pending')->get();
         return response()->json(['success' => "success", 'data' => $deliveries], 200);
     }
 

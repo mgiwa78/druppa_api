@@ -6,7 +6,8 @@ use App\Models\Driver;
 use App\Http\Requests\StoreDriverRequest;
 use App\Http\Requests\UpdateDriverRequest;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class DriverController extends Controller
 {
@@ -26,7 +27,22 @@ class DriverController extends Controller
     {
         return view('drivers.create');
     }
+    public function stateUpdate(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'isActive' => 'required|boolean',
+        ]);
+        if ($validation->fails()) {
+            return response()->json(['error' => $validation->errors()], 422);
+        } else
+            $authenticatedUser = Auth::user();
+        $authenticatedUser->isActive = $request->isActive;
 
+        $authenticatedUser->save();
+
+        return response()->json(['user' => $authenticatedUser]);
+
+    }
     /**
      * Store a newly created resource in storage.
      */

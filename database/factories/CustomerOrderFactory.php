@@ -27,6 +27,7 @@ class CustomerOrderFactory extends Factory
             'total_amount' => $this->faker->randomFloat(2, 100, 1000),
             'drop_off' => $this->faker->address(),
             'pick_up' => $this->faker->address(),
+            'status' => $this->faker->randomElement(['Pending', 'In Transit', 'Delivered']),
             'payment_method' => $this->faker->randomElement(['Credit Card', 'PayPal', 'Bank Transfer']),
             'payment_status' => $this->faker->boolean(70),
             'shipment_type' => $this->faker->randomElement(['Standard', 'Express']),

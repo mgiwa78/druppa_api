@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('payment_method');
             $table->boolean('payment_status')->default(false);
             $table->string('shipment_type');
+            $table->string('status')->default('Pending');
             $table->string('drop_off');
             $table->string('pick_up');
             $table->text('shipment_details');

@@ -29,6 +29,7 @@ return new class extends Migration {
             $table->string('vehicleMake')->nullable();
             $table->string('vehicleModel')->nullable();
             $table->string('licensePlate')->nullable();
+            $table->boolean('isActive')->default(false);
             $table->string('insurance')->nullable();
         });
     }

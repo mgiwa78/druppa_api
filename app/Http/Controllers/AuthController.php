@@ -7,8 +7,9 @@ use App\Models\Admin;
 use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -89,6 +90,13 @@ class AuthController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
+    public function getProfile(Request $request)
+    {
+        $user = Auth::user();
+        return response()->json(['user' => $user], 200);
+
+    }
     public function customerRegister(StoreCustomerRequest $request)
     {
         $request->validated();

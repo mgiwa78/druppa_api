@@ -57,12 +57,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [DeliveryController::class, 'store']);
         Route::get('/{id}', [DeliveryController::class, 'show']);
 
+
         Route::patch('/{id}', [DeliveryController::class, 'update']);
         Route::delete('/{id}', [DeliveryController::class, 'destroy']);
         Route::get('customer/{id}', [DeliveryController::class, 'getCustomerDelivery']);
 
         Route::get('count/getCount', [DeliveryController::class, 'getDeliveryCount']);
     });
+
+    Route::get('/getPendingOrders/{size}', [CustomerOrderController::class, 'showPendingOrders']);
+    Route::post('/stateUpdate', [DriverController::class, 'stateUpdate']);
+
+    Route::get('/profile', [AuthController::class, 'getProfile']);
 
     /*
     |--------------------------------------------------------------------------
