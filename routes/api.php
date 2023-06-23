@@ -40,7 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [CustomerController::class, 'fetchCustomerProfiles']);
         Route::get('/{id}', [CustomerController::class, 'fetchProfile']);
         Route::post('/', [CustomerController::class, 'store']);
-        Route::put('/{id}', [CustomerController::class, 'updateCustomerProfile']);
         Route::delete('/{id}', [CustomerController::class, 'destroy']);
 
         Route::get('count/getCount', [CustomerController::class, 'getCustomerCount']);
@@ -68,7 +67,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/getPendingOrders/{size}', [CustomerOrderController::class, 'showPendingOrders']);
     Route::post('/stateUpdate', [DriverController::class, 'stateUpdate']);
 
-    Route::get('/profile', [AuthController::class, 'getProfile']);
+    Route::group(['prefix' => 'profile'], function () {
+        Route::get('/', [AuthController::class, 'getProfile']);
+        Route::post('/', [AuthController::class, 'updateProfile']);
+        Route::post('/emailUpdate', [AuthController::class, 'updateEmail']);
+        Route::post('/passwordUpdate', [AuthController::class, 'updatePassword']);
+
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -111,10 +116,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [AdminController::class, 'fetchAdminProfiles']);
         Route::get('/{id}', [AdminController::class, 'show']);
         Route::post('/', [AdminController::class, 'create']);
-
-        Route::put('/{id}', [AdminController::class, 'edit']);
         Route::delete('/{id}', [AdminController::class, 'destroy']);
-
         Route::get('count/getCount', [AdminController::class, 'getAdminCount']);
     });
 
@@ -127,11 +129,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'drivers'], function () {
         Route::get('/', [DriverController::class, 'fetchDriverProfiles']);
         Route::post('/', [DriverController::class, 'store']);
-
         Route::get('/{id}', [DriverController::class, 'show']);
-        Route::put('/{id}', [DriverController::class, 'updateDriverProfile']);
         Route::delete('/{id}', [DriverController::class, 'destroy']);
-
         Route::get('count/getCount', [DriverController::class, 'getDriverCount']);
     });
 });

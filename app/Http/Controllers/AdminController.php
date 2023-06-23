@@ -7,6 +7,7 @@ use App\Http\Requests\StoreAdminRequest;
 use App\Http\Requests\UpdateAdminRequest;
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -111,73 +112,7 @@ class AdminController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Admin $admin, Request $request, $id)
-    {
-        $validation = Validator::make($request->all(), [
-            'firstName' => 'required|string|max:150',
-            'lastName' => 'required|string|max:150',
-            'phone_number' => 'required|string|max:150',
-            'username' => 'required|    string|max:150',
-            'password' => 'string|max:150',
-            'email' => 'string|max:150',
-            'gender' => 'string|max:150',
-            'title' => 'string|max:150',
-            'city' => 'string|max:150',
-            'state' => 'string|max:150',
 
-        ]);
-
-        if ($validation->fails()) {
-            return response()->json(['error' => $validation->errors()], 422);
-        } else {
-
-            // if (Admin::where('email', $request->email)->exists()) {
-            //     return response()->json(['error' => ['Email Already In Use']], 422);
-            // }
-
-            $admin = Admin::find($id);
-
-            $admin->firstName = $request->firstName;
-            $admin->lastName = $request->lastName;
-            $admin->username = $request->username;
-
-
-            if ($request->file('profile')) {
-
-                $file = $request->file('profile');
-                $file_name = hexdec(uniqid()) . '.' . $file->extension();
-                $file->move('./storage/druppa_customer_profiles', $file_name);
-                $admin->profile = '/storage/druppa_customer_profiles/' . $file_name;
-            }
-
-            $admin->phone_number = $request->phone_number;
-
-            $admin->address = $request->address;
-            $admin->username = $request->username;
-            $admin->city = $request->city;
-            $admin->state = $request->state;
-
-            $admin->type = 'Admin';
-
-
-            if ($request->permissions) {
-                $permissions[] = $request->permissions->json_decode();
-                $id = $admin->id;
-
-                foreach ($permissions as $key => $permission) {
-                    $perm = new Permission;
-                    $perm->customer_id = $id;
-                    $perm->permission = $permission;
-                }
-                $admin->save();
-            } else {
-                $admin->save();
-            }
-
-
-
-        }
-    }
 
     /**
      * Update the specified resource in storage.

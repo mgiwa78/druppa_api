@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Driver;
 use App\Http\Requests\StoreDriverRequest;
 use App\Http\Requests\UpdateDriverRequest;
+use App\Models\Admin;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -36,9 +38,10 @@ class DriverController extends Controller
             return response()->json(['error' => $validation->errors()], 422);
         } else
             $authenticatedUser = Auth::user();
-        $authenticatedUser->isActive = $request->isActive;
+        $user = Driver::find($authenticatedUser->id);
 
-        $authenticatedUser->save();
+        $user->isActive = $request->isActive;
+        $user->save();
 
         return response()->json(['user' => $authenticatedUser]);
 
@@ -91,45 +94,49 @@ class DriverController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
-    {
-        $driver = Driver::find($id);
 
-        if ($driver) {
-            return view('drivers.edit', compact('driver'));
-        } else {
-            return response()->json(['error' => 'error', 'message' => 'No driver found'], 200);
-        }
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function updateDriverProfile(UpdateDriverRequest $request, $id)
+    public function updateDriverProfile(UpdateDriverRequest $request)
     {
-        $validatedData = $request->validated();
 
-        $driver = Driver::find($id);
+        $request->validated();
+
+        $authenticatedUser = Auth::user();
+        $driver = Driver::find($authenticatedUser->id);
+
+
 
         if ($driver) {
-            $driver->update([
-                'firstName' => $validatedData['firstName'],
-                'lastName' => $validatedData['lastName'],
-                'email' => $validatedData['email'],
-                'gender' => $validatedData['gender'],
-                'title' => $validatedData['title'],
-                'phone_number' => $validatedData['phone_number'],
-                'type' => $validatedData['type'],
-                'city' => $validatedData['city'],
-                'state' => $validatedData['state'],
-                'licenseNumber' => $validatedData['licenseNumber'],
-                'licenseExpiration' => $validatedData['licenseExpiration'],
-                'vehicleMake' => $validatedData['vehicleMake'],
-                'vehicleModel' => $validatedData['vehicleModel'],
-                'licensePlate' => $validatedData['licensePlate'],
-                'insurance' => $validatedData['insurance'],
-                'password' => bcrypt($validatedData['password']),
-            ]);
+            $profile = NULL;
+
+            if ($request->file('profile')) {
+
+                $file = $request->file('profile');
+                $file_name = hexdec(uniqid()) . '.' . $file->extension();
+                $file->move('./storage/druppa_customer_profiles', $file_name);
+                $profile = '/storage/druppa_customer_profiles/' . $file_name;
+            }
+
+            $driver->lastName = $request->lastName;
+            $driver->gender = $request->gender;
+            $driver->title = $request->title;
+            $driver->phone_number = $request->phone_number;
+            $driver->city = $request->city;
+            $driver->state = $request->state;
+
+            $driver->licenseNumber = $request->licenseNumber;
+            $driver->licenseExpiration = $request->licenseExpiration;
+            $driver->vehicleMake = $request->vehicleMake;
+            $driver->vehicleModel = $request->vehicleModel;
+            $driver->licensePlate = $request->licensePlate;
+            $driver->insurance = $request->insurance;
+            $driver->profile = $profile;
+
+            $driver->save();
+
 
             return response()->json(['message' => 'Driver updated successfully', 'data' => $driver]);
         } else {

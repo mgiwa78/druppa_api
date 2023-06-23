@@ -115,12 +115,25 @@ class CustomerController extends Controller
 
     //     return response()->json(['success' => 'Customer profile updated successfully', 'customer' => $customer], 200);
     // }
-    public function updateCustomerProfile(UpdateCustomerRequest $request, $id)
+    public function updateCustomerProfile(UpdateCustomerRequest $request)
     {
-        $customer = Customer::find($id);
+        $request->validated();
+
+        $authenticatedUser = Auth::user();
+        $customer = Customer::find($authenticatedUser->id);
+
+
 
         if (!$customer) {
             return response()->json(['error' => 'Customer not found'], 404);
+        }
+        $profile = NULL;
+        if ($request->file('profile')) {
+
+            $file = $request->file('profile');
+            $file_name = hexdec(uniqid()) . '.' . $file->extension();
+            $file->move('./storage/druppa_customer_profiles', $file_name);
+            $profile = '/storage/druppa_customer_profiles/' . $file_name;
         }
 
         $customer->update([
@@ -133,6 +146,7 @@ class CustomerController extends Controller
             'address' => $request->address,
             'city' => $request->city,
             'state' => $request->state,
+            'profile' => $profile,
         ]);
 
         return response()->json(['success' => 'Customer updated successfully', 'customer' => $customer], 200);
@@ -141,37 +155,6 @@ class CustomerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updateProfile(UpdateUserRequest $request, Customer $customer)
-    {
-
-        $validation = Validator::make($request->all(), [
-            'id' => 'required|integer|max:150',
-        ]);
-
-        if ($validation->fails()) {
-            return response()->json(['error' => $validation->errors()], 422);
-        } else {
-            $id = $request->id;
-            $user = Customer::where('id', $id)->first();
-
-            if ($request->file('profile')) {
-
-                $file = $request->file('profile');
-                $file_name = hexdec(uniqid()) . '.' . $file->extension();
-                $file->move('./storage/druppa_customer_profiles', $file_name);
-                $user->profile = '/storage/druppa_customer_profiles/' . $file_name;
-            }
-
-            $user->name = $request->name;
-            $user->phone_number = $request->phone_number;
-            $user->address = $request->address;
-            $user->type = $request->type;
-            $user->gender = $request->gender;
-            $user->state = $request->state;
-
-            $user->save();
-        }
-    }
 
     /**
      * Remove the specified resource from storage.
