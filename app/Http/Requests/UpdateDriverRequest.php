@@ -22,22 +22,21 @@ class UpdateDriverRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'firstName' => 'required',
-            'lastName' => 'required',
-            'email' => 'required|email',
-            'gender' => 'required',
-            'title' => 'required',
-            'phone_number' => 'required',
-            'type' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'licenseNumber' => 'required',
-            'licenseExpiration' => 'required',
-            'vehicleMake' => 'required',
-            'vehicleModel' => 'required',
-            'licensePlate' => 'required',
-            'insurance' => 'required',
-            'password' => 'required|min:6',
+            'firstName' => 'sometimes|string',
+            'lastName' => 'sometimes|string',
+            'gender' => 'sometimes|string',
+            'title' => 'sometimes|string',
+            'phone_number' => 'sometimes|string',
+            'city' => 'sometimes|string',
+            'state' => 'sometimes|string',
+            'licenseNumber' => 'sometimes|string',
+            'licenseExpiration' => 'sometimes|string',
+            'vehicleMake' => 'sometimes|string',
+            'vehicleModel' => 'sometimes|string',
+            'licensePlate' => 'sometimes|string',
+            'insurance' => 'sometimes|string',
+            'email' => 'sometimes|string',
+            'password' => 'sometimes|string|min:6',
         ];
     }
 }

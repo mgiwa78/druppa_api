@@ -28,12 +28,12 @@ class UpdateCustomerRequest extends FormRequest
             'gender' => 'required|string|in:male,female',
             'type' => 'string',
             'title' => 'nullable|string',
-            'email' => 'required|email|unique:customers,email,' . $this->route('id'),
+            'email' => 'required|email',
             'phone_number' => 'required|string',
             'address' => 'required|string',
             'city' => 'required|string',
             'state' => 'required|string',
-           
+
         ];
     }
 }
