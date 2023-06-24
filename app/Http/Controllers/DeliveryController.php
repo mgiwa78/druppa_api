@@ -6,8 +6,11 @@ use App\Http\Requests\StoreDeliveryRequest;
 use App\Http\Requests\UpdateDeliveryRequest;
 use App\Models\Customer;
 use App\Models\Delivery;
+use App\Models\Driver;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class DeliveryController extends Controller
@@ -151,4 +154,21 @@ class DeliveryController extends Controller
         $count = Delivery::count();
         return response()->json(['count' => $count], 200);
     }
+    public function getDriverDeliveries()
+    {
+        $authenticatedUser = Auth::user();
+        if ($authenticatedUser->type === "Driver") {
+
+            $deliveries = Delivery::where('driver_id', '=', $authenticatedUser->id)->with('driver')->paginate();
+
+            return response()->json(['message' => 'success', 'data' => $deliveries], 200);
+        } else {
+            return response()->json(['error' => 'error', 'message' => 'No driver found'], 404);
+
+        }
+
+
+
+    }
+
 }

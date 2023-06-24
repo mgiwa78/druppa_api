@@ -75,6 +75,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     });
 
+    Route::get('/driverStatics', [DriverController::class, 'getDriverStatics']);
+    Route::get('/adminStatics', [AdminController::class, 'getAdminStatics']);
+
+
+
+
     /*
     |--------------------------------------------------------------------------
     | Inventory Routes

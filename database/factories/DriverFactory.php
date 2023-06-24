@@ -41,6 +41,7 @@ class DriverFactory extends Factory
             'gender' => $gender,
             'title' => $this->faker->title($gender),
             'phone_number' => $this->faker->phoneNumber(),
+            'address' => $this->faker->streetAddress(),
             'type' => 'Driver',
             'city' => $this->faker->city(),
             'state' => $this->faker->state(),

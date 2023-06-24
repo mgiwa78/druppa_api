@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->string("type");
             $table->string("title");
             $table->string("gender");
+            $table->string("address");
             $table->string('licenseNumber')->nullable();
             $table->date('licenseExpiration')->nullable();
             $table->string('vehicleMake')->nullable();

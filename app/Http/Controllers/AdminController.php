@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Http\Requests\StoreAdminRequest;
 use App\Http\Requests\UpdateAdminRequest;
+use App\Models\Customer;
+use App\Models\Driver;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -142,9 +144,17 @@ class AdminController extends Controller
     /**
      * Get the count of admins.
      */
-    public function getAdminCount()
+    public function getAdminStatics()
     {
         $adminCount = Admin::where('type', 'Admin')->count();
-        return response()->json(['success' => "success", 'count' => $adminCount], 200);
+        $driverCount = Driver::where('type', 'Driver')->count();
+        $customerCount = Customer::where('type', 'Customer')->count();
+
+        $adminStatics = [
+            'admin' => $adminCount,
+            'driver' => $driverCount,
+            'customer' => $customerCount
+        ];
+        return response()->json(['success' => "success", 'data' => $adminStatics], 200);
     }
 }

@@ -287,7 +287,7 @@ class AuthController extends Controller
                 $customer->save();
                 return response()->json(['message' => 'Email updated successfully', 'data' => $customer]);
             } else {
-                return response()->json(['error' => 'error', 'message' => 'No driver found'], 200);
+                return response()->json(['error' => 'error', 'message' => 'No driver found'], 404);
             }
         }
 

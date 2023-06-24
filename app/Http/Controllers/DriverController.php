@@ -7,8 +7,11 @@ use App\Http\Requests\StoreDriverRequest;
 use App\Http\Requests\UpdateDriverRequest;
 use App\Models\Admin;
 use App\Models\Customer;
+use App\Models\Delivery;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class DriverController extends Controller
@@ -166,5 +169,35 @@ class DriverController extends Controller
     {
         $count = Driver::count();
         return response()->json(['count' => $count], 200);
+    }
+
+    public function getDriverStatics()
+    {
+        $authenticatedUser = Auth::user();
+        if ($authenticatedUser->type === "Driver") {
+            $driverId = $authenticatedUser->id;
+
+            $totalDeliveries = Delivery::where('driver_id', $driverId)->count();
+            $totalDistance = Delivery::where('driver_id', $driverId)->sum('distance');
+            $totalTime = Delivery::where('driver_id', $driverId)->sum('time_taken');
+
+            $performance = DB::table('deliveries')
+                ->selectRaw('SUM(time_taken) AS total_time, SUM(distance) AS total_distance, COUNT(*) AS total_deliveries')
+                ->where('driver_id', $driverId)
+                ->first();
+            $performanceRate = ($totalDistance / $totalTime) * $totalDeliveries;
+
+            return response()->json([
+                'message' => 'success',
+                'data' => [
+                    'total_deliveries' => $totalDeliveries,
+                    'total_distance' => $totalDistance,
+                    'performance' => $performanceRate,
+                ]
+            ], Response::HTTP_OK);
+        } else {
+            return response()->json(['error' => 'error', 'message' => 'No driver found'], 404);
+
+        }
     }
 }
