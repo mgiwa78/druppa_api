@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerOrderController;
+use App\Http\Controllers\CustomerActivityController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\InventoryController;
@@ -42,8 +43,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [CustomerController::class, 'store']);
         Route::put('/{id}', [CustomerController::class, 'updateCustomerProfile']);
         Route::delete('/{id}', [CustomerController::class, 'destroy']);
+        // Activity routes
+        Route::get('/{id}/activity', [CustomerController::class, 'getCustomerActivity']);
+        Route::post('/{id}/activity', [CustomerController::class, 'logCustomerActivity']);
 
         Route::get('count/getCount', [CustomerController::class, 'getCustomerCount']);
+        Route::post('/customer-activity', [CustomerActivityController::class, 'logActivity']);
     });
 
     /*
