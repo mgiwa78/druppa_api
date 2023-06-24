@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\CustomerActivity;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -12,9 +13,34 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
+    /**
+     * Customer Log Activities.
+     */
+    
+    private function logCustomerActivity($activity)
+    {
+        $customer = Auth::user();
+        CustomerActivity::create([
+            'customer_id' => $customer->id,
+            'activity' => $activity,
+        ]);
+        Log::info("Customer Activity Logged: $activity");
+    }
+
+    public function getCustomerActivity($id)
+    {
+        // Retrieve customer activity log
+        $customerActivity = CustomerActivity::where('customer_id', $id)->get();
+
+        // Return the activity log as a response
+        return response()->json($customerActivity);
+    }
+
+    
     /**
      * Display a listing of thCustomere resource.
      */
@@ -27,6 +53,8 @@ class CustomerController extends Controller
         //     return response()->json(['success' => "success", 'customer_users' => $customer_users], 201);
 
         // } else {
+            
+        $this->logCustomerActivity('Fetched customer profiles');
         $customer_users = Customer::all();
         return response()->json(['success' => "success", 'customer_users' => $customer_users], 200);
 
@@ -47,6 +75,8 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request)
     {
+        $this->logCustomerActivity('Created a new customer');
+
         $request->validated();
 
         // Create a new customer instance
@@ -73,6 +103,7 @@ class CustomerController extends Controller
      */
     public function fetchProfile($id, Request $request)
     {
+        $this->logCustomerActivity("Fetched customer profile with ID: $id");
 
         $user = Customer::find($id);
 
@@ -161,6 +192,8 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
+        $this->logCustomerActivity("Deleted customer with ID: $id");
+
         $customer = Customer::find($id);
 
         if (!$customer) {
