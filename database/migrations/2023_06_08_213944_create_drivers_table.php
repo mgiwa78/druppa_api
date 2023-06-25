@@ -31,6 +31,7 @@ return new class extends Migration {
             $table->string('vehicleModel')->nullable();
             $table->string('licensePlate')->nullable();
             $table->boolean('isActive')->default(false);
+            $table->boolean('allowEdit')->default(false);
             $table->string('insurance')->nullable();
         });
     }

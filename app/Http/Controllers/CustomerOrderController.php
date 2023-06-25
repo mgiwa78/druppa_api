@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\CustomerOrder;
 use App\Http\Requests\StoreCustomerOrderRequest;
 use App\Http\Requests\UpdateCustomerOrderRequest;
+use App\Models\ActivityLog;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerOrderController extends Controller
 {
@@ -13,7 +15,19 @@ class CustomerOrderController extends Controller
      */
     public function index()
     {
+
         $orders = CustomerOrder::all();
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+
+
+        $activityLog->description = "Access Customer Orders";
+
+        $activityLog->save();
         return response()->json(['success' => 'success', 'data' => $orders], 200);
     }
 
@@ -28,6 +42,8 @@ class CustomerOrderController extends Controller
 
     public function showPendingOrders($size)
     {
+
+
         if ($size) {
             $customerOrders = CustomerOrder::where('status', '=', 'Pending')->with('customer')->orderByDesc('created_at')->paginate($size);
 
@@ -63,6 +79,17 @@ class CustomerOrderController extends Controller
             'last_page' => $customerOrders->lastPage(),
             'data' => $responseData,
         ];
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+
+
+        $activityLog->description = "Access Pending Orders";
+
+        $activityLog->save();
+
         return response()->json(['success' => "success", 'data' => $paginatedResponse], 200);
     }
     /**

@@ -8,6 +8,7 @@ use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,31 +21,13 @@ class CustomerController extends Controller
     /**
      * Customer Log Activities.
      */
-    
-    private function logCustomerActivity($activity)
-    {
-        $customer = Auth::user();
-        CustomerActivity::create([
-            'customer_id' => $customer->id,
-            'activity' => $activity,
-        ]);
-        Log::info("Customer Activity Logged: $activity");
-    }
 
-    public function getCustomerActivity($id)
-    {
-        // Retrieve customer activity log
-        $customerActivity = CustomerActivity::where('customer_id', $id)->get();
 
-        // Return the activity log as a response
-        return response()->json($customerActivity);
-    }
 
-    
     /**
      * Display a listing of thCustomere resource.
      */
-    public function fetchCustomerProfiles(Customer $customer)
+    public function fetchCustomerProfiles()
     {
         // $pageSize = $size === 10 ? 0 : (int) $size;
 
@@ -53,10 +36,20 @@ class CustomerController extends Controller
         //     return response()->json(['success' => "success", 'customer_users' => $customer_users], 201);
 
         // } else {
-            
-        $this->logCustomerActivity('Fetched customer profiles');
+
         $customer_users = Customer::all();
-        return response()->json(['success' => "success", 'customer_users' => $customer_users], 200);
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+
+
+        $activityLog->description = "Get All Customers";
+
+        $activityLog->save();
+        return response()->json(['success' => "success", 'data' => $customer_users], 200);
 
         // }
 
@@ -75,7 +68,6 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request)
     {
-        $this->logCustomerActivity('Created a new customer');
 
         $request->validated();
 
@@ -95,6 +87,19 @@ class CustomerController extends Controller
 
         $customer->save();
 
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($customer);
+
+
+        $activityLog->description = "Create New Customer";
+
+        $activityLog->save();
+
         return response()->json(['success' => 'Customer created successfully'], 201);
     }
 
@@ -103,9 +108,10 @@ class CustomerController extends Controller
      */
     public function fetchProfile($id, Request $request)
     {
-        $this->logCustomerActivity("Fetched customer profile with ID: $id");
 
         $user = Customer::find($id);
+
+
 
         if ($user) {
             return response()->json(['success' => "success", 'user' => $user], 200);
@@ -167,6 +173,9 @@ class CustomerController extends Controller
             $profile = '/storage/druppa_customer_profiles/' . $file_name;
         }
 
+
+
+
         $customer->update([
             'firstName' => $request->firstName,
             'lastName' => $request->lastName,
@@ -180,6 +189,17 @@ class CustomerController extends Controller
             'profile' => $profile,
         ]);
 
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($customer);
+
+
+        $activityLog->description = "Customer Profile Updated";
+
+        $activityLog->save();
         return response()->json(['success' => 'Customer updated successfully', 'customer' => $customer], 200);
     }
 
@@ -192,7 +212,6 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        $this->logCustomerActivity("Deleted customer with ID: $id");
 
         $customer = Customer::find($id);
 

@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CustomerActivity extends Model
+class Invoice extends Model
 {
     use HasFactory;
-    protected $table = 'customer_activities';
 
-    protected $fillable = ['customer_id', 'activity'];
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, );
+    }
 }

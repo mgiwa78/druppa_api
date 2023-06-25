@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Driver;
 use App\Http\Requests\StoreDriverRequest;
 use App\Http\Requests\UpdateDriverRequest;
+use App\Models\ActivityLog;
 use App\Models\Admin;
 use App\Models\Customer;
 use App\Models\Delivery;
@@ -22,6 +23,17 @@ class DriverController extends Controller
     public function fetchDriverProfiles()
     {
         $drivers = Driver::all();
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+
+
+        $activityLog->description = "Access Driver Profiles";
+
+        $activityLog->save();
+
         return response()->json(['success' => 'success', 'data' => $drivers], 200);
     }
 
@@ -46,6 +58,18 @@ class DriverController extends Controller
         $user->isActive = $request->isActive;
         $user->save();
 
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($user);
+
+
+        $activityLog->description = "Driver Updated Their Active State";
+
+        $activityLog->save();
         return response()->json(['user' => $authenticatedUser]);
 
     }
@@ -76,7 +100,60 @@ class DriverController extends Controller
 
         $driver->save();
 
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($driver);
+
+
+        $activityLog->description = "Create Driver Profile";
+
+        $activityLog->save();
         return response()->json(['message' => 'Driver created successfully', 'driver' => $driver]);
+    }
+    public function updateDriver(UpdateDriverRequest $request, $id)
+    {
+        $request->validated();
+
+        $driver = Driver::find($id);
+        $driver->firstName = $request->firstName;
+        $driver->lastName = $request->lastName;
+        $driver->email = $request->email;
+
+        $driver->gender = $request->gender;
+        $driver->title = $request->title;
+        $driver->phone_number = $request->phone_number;
+        $driver->city = $request->city;
+        $driver->state = $request->state;
+        $driver->allowEdit = $request->allowEdit;
+
+        $driver->licenseNumber = $request->licenseNumber;
+        $driver->licenseExpiration = $request->licenseExpiration;
+        $driver->vehicleMake = $request->vehicleMake;
+        $driver->vehicleModel = $request->vehicleModel;
+        $driver->licensePlate = $request->licensePlate;
+        $driver->insurance = $request->insurance;
+        // $driver->password = bcrypt($request->password);
+
+        $driver->save();
+
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($driver);
+
+
+        $activityLog->description = "Create Driver Profile";
+
+        $activityLog->save();
+
+        return response()->json(['message' => 'Driver updated successfully', 'driver' => $driver]);
     }
 
 
@@ -86,6 +163,19 @@ class DriverController extends Controller
     public function show($id)
     {
         $driver = Driver::find($id);
+
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($driver);
+
+
+        $activityLog->description = "Retreive Driver Profile";
+
+        $activityLog->save();
 
         if ($driver) {
             return response()->json(['success' => "success", 'data' => $driver], 200);
@@ -126,6 +216,7 @@ class DriverController extends Controller
             $driver->lastName = $request->lastName;
             $driver->gender = $request->gender;
             $driver->title = $request->title;
+            $driver->allowEdit = $request->allowEdit;
             $driver->phone_number = $request->phone_number;
             $driver->city = $request->city;
             $driver->state = $request->state;
@@ -140,6 +231,18 @@ class DriverController extends Controller
 
             $driver->save();
 
+
+            $authenticatedUser = Auth::user();
+
+            $activityLog = new ActivityLog();
+
+            $activityLog->user()->associate($authenticatedUser);
+            $activityLog->data()->associate($driver);
+
+
+            $activityLog->description = "Driver Profile Updated";
+
+            $activityLog->save();
 
             return response()->json(['message' => 'Driver updated successfully', 'data' => $driver]);
         } else {
@@ -156,6 +259,19 @@ class DriverController extends Controller
 
         if ($driver) {
             $driver->delete();
+
+
+            $authenticatedUser = Auth::user();
+
+            $activityLog = new ActivityLog();
+
+            $activityLog->user()->associate($authenticatedUser);
+            $activityLog->data()->associate($driver);
+
+
+            $activityLog->description = "Driver Profile Deleted";
+
+            $activityLog->save();
             return response()->json(['message' => 'Driver deleted successfully']);
         } else {
             return response()->json(['error' => 'Driver not found']);

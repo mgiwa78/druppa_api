@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class CustomerOrder extends Model
 {
@@ -13,9 +14,13 @@ class CustomerOrder extends Model
     {
         return $this->belongsTo((Customer::class));
     }
-    public function delivery()
+    // public function delivery()
+    // {
+    //     return $this->hasOne((Delivery::class));
+    // }
+    public function activityData(): MorphMany
     {
-        return $this->hasOne((Delivery::class));
+        return $this->morphMany(ActivityLog::class, 'data');
     }
 
 }

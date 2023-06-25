@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -49,7 +50,7 @@ class Customer extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function deliveries()
+    public function delivery()
     {
         return $this->hasMany(Delivery::class);
     }
@@ -64,5 +65,17 @@ class Customer extends Authenticatable
     public function payment()
     {
         return $this->hasMany(Payment::class);
+    }
+    public function invoice()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+    public function activityData(): MorphMany
+    {
+        return $this->morphMany(ActivityLog::class, 'data');
+    }
+    public function activityPerformer(): MorphMany
+    {
+        return $this->morphMany(ActivityLog::class, 'user');
     }
 }

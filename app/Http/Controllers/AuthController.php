@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Requests\UpdateDriverRequest;
 use App\Http\Requests\UpdateEmailRequest;
 use App\Http\Requests\UpdatePasswordRequest;
+use App\Models\ActivityLog;
 use App\Models\Admin;
 use App\Models\Customer;
 use App\Models\Driver;
@@ -46,10 +47,16 @@ class AuthController extends Controller
 
 
         if ($user) {
+            $activityLog = new ActivityLog();
+            $activityLog->user()->associate($user);
+            $activityLog->data()->associate($user);
+
             if ($request->type === 'Admin') {
                 if (Auth::guard('admin')->attempt($credentials)) {
                     $authenticatedUser = Auth::guard('admin')->user();
                     $token = $user->createToken('druppa::admin')->plainTextToken;
+                    $activityLog->description = "Admin Login";
+                    $activityLog->save();
 
                     return response()->json(['user' => $authenticatedUser, 'token' => $token]);
 
@@ -59,6 +66,8 @@ class AuthController extends Controller
             if ($request->type === 'Customer') {
                 if (Auth::guard('customer')->attempt($credentials)) {
                     $authenticatedUser = Auth::guard('customer')->user();
+                    $activityLog->description = "Customer Login";
+                    $activityLog->save();
 
                     $token = $user->createToken('druppa::customer')->plainTextToken;
 
@@ -68,6 +77,9 @@ class AuthController extends Controller
             }
             if ($request->type === 'Driver') {
                 if (Auth::guard('driver')->attempt($credentials)) {
+
+                    $activityLog->description = "Driver Login";
+                    $activityLog->save();
 
                     $token = $user->createToken('druppa::driver')->plainTextToken;
 
@@ -98,12 +110,20 @@ class AuthController extends Controller
 
     public function getProfile(Request $request)
     {
+        $activityLog = new ActivityLog();
         $user = Auth::user();
+
+        $activityLog->user()->associate($user);
+        $activityLog->data()->associate($user);
+        $activityLog->description = "Profile Access";
+        $activityLog->save();
+
         return response()->json(['user' => $user], 200);
 
     }
     public function updateProfile(Request $request, UpdateDriverRequest $driverRequest, UpdateCustomerRequest $customerRequest)
     {
+
         $authenticatedUser = Auth::user();
         if ("Admin" === $authenticatedUser->type) {
             $admin = Admin::find($authenticatedUser->id);
@@ -157,14 +177,24 @@ class AuthController extends Controller
                         $perm->customer_id = $id;
                         $perm->permission = $permission;
                     }
-                    $admin->save();
-                    return response()->json(['message' => 'Admin updated successfully']);
 
-                } else {
-                    $admin->save();
+
+
                 }
 
+                $activityLog = new ActivityLog();
 
+                $admin->save();
+
+                $activityLog->user()->associate($authenticatedUser);
+                $activityLog->data()->associate($admin);
+                $activityLog->description = "Profile Modification";
+
+                $activityLog->save();
+
+
+
+                return response()->json(['message' => 'Admin updated successfully']);
 
             }
         }
@@ -200,7 +230,19 @@ class AuthController extends Controller
                 $driver->insurance = $driverRequest->insurance;
                 $driver->profile = $profile;
 
+
+                $activityLog = new ActivityLog();
+
                 $driver->save();
+
+                $activityLog->user()->associate($authenticatedUser);
+                $activityLog->data()->associate($driver);
+
+                $activityLog->description = "Driver Profile Modification";
+
+                $activityLog->save();
+
+
 
 
                 return response()->json(['message' => 'Driver updated successfully', 'data' => $driver]);
@@ -231,7 +273,17 @@ class AuthController extends Controller
             $customer->gender = $customerRequest->gender;
             $customer->state = $customerRequest->state;
 
+            $activityLog = new ActivityLog();
+
             $customer->save();
+
+            $activityLog->user()->associate($authenticatedUser);
+            $activityLog->data()->associate($customer);
+
+            $activityLog->description = "Customer Profile Modification";
+            $activityLog->save();
+
+
             return response()->json(['message' => 'Customer updated successfully']);
 
         }
@@ -254,7 +306,19 @@ class AuthController extends Controller
 
                 if ($admin) {
                     $admin->email = $emailRequest->email;
+
                     $admin->save();
+
+                    $activityLog = new ActivityLog();
+
+                    $activityLog->user()->associate($authenticatedUser);
+                    $activityLog->data()->associate($admin);
+
+                    $activityLog->description = "Customer Email Update";
+
+                    $activityLog->save();
+
+
 
                     return response()->json(['message' => 'Email updated successfully', 'data' => $admin]);
                 } else {
@@ -272,6 +336,17 @@ class AuthController extends Controller
                 $driver->email = $emailRequest->email;
 
                 $driver->save();
+
+                $activityLog = new ActivityLog();
+
+                $activityLog->user()->associate($authenticatedUser);
+                $activityLog->data()->associate($driver);
+
+                $activityLog->description = "Driver Email Update";
+
+                $activityLog->save();
+
+
                 return response()->json(['message' => 'Email updated successfully', 'data' => $driver]);
             } else {
                 return response()->json(['error' => 'error', 'message' => 'No driver found'], 200);
@@ -284,7 +359,19 @@ class AuthController extends Controller
 
             if ($customer) {
                 $customer->email = $emailRequest->email;
+
                 $customer->save();
+
+                $activityLog = new ActivityLog();
+
+                $activityLog->user()->associate($authenticatedUser);
+                $activityLog->data()->associate($customer);
+
+                $activityLog->description = "Customer Email Update";
+
+                $activityLog->save();
+
+
                 return response()->json(['message' => 'Email updated successfully', 'data' => $customer]);
             } else {
                 return response()->json(['error' => 'error', 'message' => 'No driver found'], 404);
@@ -308,7 +395,19 @@ class AuthController extends Controller
                 if ($admin) {
                     $admin->password = Hash::make($passwordRequest->newPassword);
 
+
                     $admin->save();
+
+                    $activityLog = new ActivityLog();
+
+                    $activityLog->user()->associate($authenticatedUser);
+                    $activityLog->data()->associate($admin);
+
+                    $activityLog->description = "Admin Password Update";
+
+                    $activityLog->save();
+
+
 
                     return response()->json(['message' => 'Email updated successfully', 'data' => $admin]);
                 } else {
@@ -327,6 +426,15 @@ class AuthController extends Controller
 
 
                 $driver->save();
+                $activityLog = new ActivityLog();
+
+                $activityLog->user()->associate($authenticatedUser);
+                $activityLog->data()->associate($driver);
+
+                $activityLog->description = "Driver Password Update";
+
+                $activityLog->save();
+
                 return response()->json(['message' => 'Email updated successfully', 'data' => $driver]);
             } else {
                 return response()->json(['error' => 'error', 'message' => 'No driver found'], 200);
@@ -341,6 +449,16 @@ class AuthController extends Controller
                 $customer->password = Hash::make($passwordRequest->newPassword);
 
                 $customer->save();
+
+                $activityLog = new ActivityLog();
+
+                $activityLog->user()->associate($authenticatedUser);
+                $activityLog->data()->associate($customer);
+
+                $activityLog->description = "Driver Password Update";
+
+                $activityLog->save();
+
                 return response()->json(['message' => 'Email updated successfully', 'data' => $customer]);
             } else {
                 return response()->json(['error' => 'error', 'message' => 'No driver found'], 200);
@@ -371,6 +489,14 @@ class AuthController extends Controller
         $user->save();
 
 
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($user);
+
+        $activityLog->description = "Customer Registration";
+
+        $activityLog->save();
 
         $token = $user->createToken('druppa')->plainTextToken;
 

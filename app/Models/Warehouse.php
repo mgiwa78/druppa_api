@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Warehouse extends Model
 {
@@ -14,4 +15,8 @@ class Warehouse extends Model
         return $this->hasMany(Inventory::class);
     }
 
+    public function activityData(): MorphMany
+    {
+        return $this->morphMany(ActivityLog::class, 'data');
+    }
 }

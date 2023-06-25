@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWarehouseRequest;
 use App\Http\Requests\UpdateWarehouseRequest;
+use App\Models\ActivityLog;
 use App\Models\Customer;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class WarehouseController extends Controller
@@ -33,35 +35,40 @@ class WarehouseController extends Controller
     {
         $request->validated();
 
-        $customerID = $request->customer;
-
-        $delivery = new Warehouse();
-
-        // Generate a unique delivery_id using UUID
+        $warehouse = new Warehouse();
 
 
-        // Set delivery attributes from the request data
-        $delivery->customer_id = $customerID;
-        $delivery->tracking_number = Str::uuid();
-        $delivery->origin = $request->origin;
-        $delivery->destination = $request->destination;
 
-        $delivery->pickup_date = $request->pickup_date;
-        $delivery->delivery_date = $request->delivery_date;
-        $delivery->delivery_by = $request->delivery_by;
+        $warehouse->name = $request->name;
+        $warehouse->location = $request->location;
+        $warehouse->capacity = $request->capacity;
 
 
-        $delivery->save();
+        $warehouse->save();
+
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($warehouse);
+
+
+        $activityLog->description = "Warehouse Created";
+
+        $activityLog->save();
+
 
         return response()->json([
-            'data' => $delivery,
+            'data' => $warehouse,
         ], 201);
     }
 
     public function show($id)
     {
-        $deliveries = Warehouse::find($id);
-        return response()->json(['success' => "success", 'data' => $deliveries], 200);
+        $warehouse = Warehouse::find($id);
+        return response()->json(['success' => "success", 'data' => $warehouse], 200);
 
     }
 
@@ -69,26 +76,37 @@ class WarehouseController extends Controller
     {
         $request->validated();
 
-        $delivery = Warehouse::find($id);
+        $warehouse = Warehouse::find($id);
 
-        $delivery->origin = $request->origin;
-        $delivery->destination = $request->destination;
+        $warehouse->name = $request->name;
+        $warehouse->location = $request->location;
 
-        $delivery->delivery_date = $request->delivery_date;
-        $delivery->delivery_by = $request->delivery_by;
+        $warehouse->capacity = $request->capacity;
 
 
-        $delivery->save();
+        $warehouse->save();
 
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($warehouse);
+
+
+        $activityLog->description = "Warehouse Updated";
+
+        $activityLog->save();
         return response()->json([
-            'data' => $delivery,
+            'data' => $warehouse,
         ]);
     }
 
     public function destroy($id)
     {
-        $delivery = Warehouse::find($id);
-        $delivery->delete();
+        $warehouse = Warehouse::find($id);
+        $warehouse->delete();
 
         return response()->json([
             'message' => 'Warehouse record deleted successfully.',

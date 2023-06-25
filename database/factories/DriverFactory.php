@@ -51,6 +51,7 @@ class DriverFactory extends Factory
             'vehicleMake' => $this->faker->word(),
             'vehicleModel' => $this->faker->word(),
             'licensePlate' => $this->faker->word(),
+            'allowEdit' => $this->faker->randomElement([false, true]),
             'insurance' => $this->faker->word(),
         ];
     }

@@ -4,10 +4,10 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerOrderController;
-use App\Http\Controllers\CustomerActivityController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\UserController;
 use App\Models\CustomerOrder;
@@ -42,12 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [CustomerController::class, 'fetchProfile']);
         Route::post('/', [CustomerController::class, 'store']);
         Route::delete('/{id}', [CustomerController::class, 'destroy']);
-        // Activity routes
-        Route::get('/{id}/activity', [CustomerController::class, 'getCustomerActivity']);
-        Route::post('/{id}/activity', [CustomerController::class, 'logCustomerActivity']);
+
 
         Route::get('count/getCount', [CustomerController::class, 'getCustomerCount']);
-        Route::post('/customer-activity', [CustomerActivityController::class, 'logActivity']);
     });
 
     /*
@@ -69,8 +66,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('count/getCount', [DeliveryController::class, 'getDeliveryCount']);
     });
 
-    Route::get('/getPendingOrders/{size}', [CustomerOrderController::class, 'showPendingOrders']);
-    Route::post('/stateUpdate', [DriverController::class, 'stateUpdate']);
 
     Route::group(['prefix' => 'profile'], function () {
         Route::get('/', [AuthController::class, 'getProfile']);
@@ -80,8 +75,29 @@ Route::middleware('auth:sanctum')->group(function () {
 
     });
 
+    /*
+|--------------------------------------------------------------------------
+| Invoice Routes
+|--------------------------------------------------------------------------
+*/
+
+    Route::group(['prefix' => 'invoice'], function () {
+        Route::get('/', [InvoiceController::class, 'index']);
+        Route::get('/customer/{size}', [InvoiceController::class, 'getCustomerInvoices']);
+
+
+    });
+    /*
+|--------------------------------------------------------------------------
+| Misc Routes
+|--------------------------------------------------------------------------
+*/
+
     Route::get('/driverStatics', [DriverController::class, 'getDriverStatics']);
     Route::get('/adminStatics', [AdminController::class, 'getAdminStatics']);
+    Route::get('/fetchDriverDeliveries', [DeliveryController::class, 'getDriverDeliveries']);
+    Route::get('/getPendingOrders/{size}', [CustomerOrderController::class, 'showPendingOrders']);
+    Route::post('/stateUpdate', [DriverController::class, 'stateUpdate']);
 
 
 
@@ -141,6 +157,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [DriverController::class, 'fetchDriverProfiles']);
         Route::post('/', [DriverController::class, 'store']);
         Route::get('/{id}', [DriverController::class, 'show']);
+        Route::post('/{id}', [DriverController::class, 'updateDriver']);
         Route::delete('/{id}', [DriverController::class, 'destroy']);
         Route::get('count/getCount', [DriverController::class, 'getDriverCount']);
     });

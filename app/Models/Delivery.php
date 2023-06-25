@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Delivery extends Model
 {
@@ -22,5 +23,9 @@ class Delivery extends Model
     public function driver()
     {
         return $this->belongsTo(Driver::class, );
+    }
+    public function activityData(): MorphMany
+    {
+        return $this->morphMany(ActivityLog::class, 'data');
     }
 }

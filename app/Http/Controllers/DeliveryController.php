@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDeliveryRequest;
 use App\Http\Requests\UpdateDeliveryRequest;
+use App\Models\ActivityLog;
 use App\Models\Customer;
 use App\Models\Delivery;
 use App\Models\Driver;
@@ -19,6 +20,7 @@ class DeliveryController extends Controller
 
     public function getCustomerDelivery($id)
     {
+
         $deliveries = Delivery::where('customer_id', '=', $id)->with('driver')->paginate();
 
 
@@ -47,6 +49,18 @@ class DeliveryController extends Controller
             'last_page' => $deliveries->lastPage(),
             'data' => $responseData,
         ];
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+
+
+        $activityLog->description = "Access Customer Deliveries";
+
+        $activityLog->save();
+
         return response()->json([
             'data' => $paginatedResponse,
         ]);
@@ -81,6 +95,16 @@ class DeliveryController extends Controller
             'data' => $responseData,
         ];
 
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+
+
+        $activityLog->description = "Access All Deliveries";
+
+        $activityLog->save();
         return response()->json(['success' => true, 'data' => $paginatedResponse], 200);
     }
 
@@ -104,6 +128,18 @@ class DeliveryController extends Controller
 
         $delivery->save();
 
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($delivery);
+
+
+        $activityLog->description = "Created New Delivery";
+
+        $activityLog->save();
+
         return response()->json([
             "data" => $delivery
         ], 201);
@@ -112,6 +148,19 @@ class DeliveryController extends Controller
     public function show($id)
     {
         $deliveries = Delivery::find($id);
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($deliveries);
+
+
+        $activityLog->description = "Access Delivery";
+
+        $activityLog->save();
+
         return response()->json(['success' => "success", 'data' => $deliveries], 200);
     }
 
@@ -123,6 +172,8 @@ class DeliveryController extends Controller
 
     public function update(UpdateDeliveryRequest $request, $id)
     {
+
+
         $request->validated();
 
         $delivery = Delivery::find($id);
@@ -134,6 +185,17 @@ class DeliveryController extends Controller
 
         $delivery->save();
 
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($delivery);
+
+
+        $activityLog->description = "Updated Delivery";
+
+        $activityLog->save();
         return response()->json([
             'data' => $delivery,
         ]);
@@ -159,7 +221,7 @@ class DeliveryController extends Controller
         $authenticatedUser = Auth::user();
         if ($authenticatedUser->type === "Driver") {
 
-            $deliveries = Delivery::where('driver_id', '=', $authenticatedUser->id)->with('driver')->paginate();
+            $deliveries = Delivery::where('driver_id', '=', $authenticatedUser->id)->with('driver')->with('customer')->paginate();
 
             return response()->json(['message' => 'success', 'data' => $deliveries], 200);
         } else {

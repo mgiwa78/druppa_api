@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Customer;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class InventoryController extends Controller
@@ -15,6 +17,18 @@ class InventoryController extends Controller
     {
         $customer = Customer::findOrFail($customerId);
         $inventries = $customer->inventries()->get();
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($inventries);
+
+
+        $activityLog->description = "Driver Profile Updated";
+
+        $activityLog->save();
 
         return response()->json([
             'data' => $inventries,
@@ -46,6 +60,17 @@ class InventoryController extends Controller
             'data' => $responseData,
         ];
 
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+
+
+        $activityLog->description = "Access All Inventries";
+
+        $activityLog->save();
         return response()->json(['success' => true, 'data' => $paginatedResponse], 200);
     }
 
@@ -68,6 +93,17 @@ class InventoryController extends Controller
 
         $inventries->save();
 
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+
+
+        $activityLog->description = "Created New Inventory";
+
+        $activityLog->save();
         return response()->json([
             'data' => $inventries,
         ], 201);
@@ -76,6 +112,18 @@ class InventoryController extends Controller
     public function show($id)
     {
         $inventries = Inventory::find($id);
+
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+
+
+        $activityLog->description = "Access Inventory Data";
+
+        $activityLog->save();
         return response()->json(['success' => "success", 'data' => $inventries], 200);
     }
 
@@ -90,6 +138,19 @@ class InventoryController extends Controller
 
         $inventries->save();
 
+
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($inventries);
+
+
+        $activityLog->description = "Inventory Updated";
+
+        $activityLog->save();
         return response()->json([
             'data' => $inventries,
         ]);
@@ -97,8 +158,20 @@ class InventoryController extends Controller
 
     public function destroy($id)
     {
-        $inventries = Inventory::find($id);
-        $inventries->delete();
+        $inventory = Inventory::find($id);
+        $inventory->delete();
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($inventory);
+
+
+        $activityLog->description = "Inventory Deleted";
+
+        $activityLog->save();
 
         return response()->json([
             'message' => 'Inventory record deleted successfully.',

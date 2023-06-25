@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Http\Requests\StoreAdminRequest;
 use App\Http\Requests\UpdateAdminRequest;
+use App\Models\ActivityLog;
 use App\Models\Customer;
+use App\Models\CustomerOrder;
 use App\Models\Driver;
 use App\Models\Permission;
 use Illuminate\Http\Request;
@@ -20,6 +22,16 @@ class AdminController extends Controller
      */
     public function fetchAdminProfiles()
     {
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+
+        $activityLog->description = "Access Admin Profiles";
+
+        $activityLog->save();
+
         $pageSize = 10;
 
         if ($pageSize) {
@@ -86,8 +98,19 @@ class AdminController extends Controller
                     $perm->permission = $permission;
                 }
             }
-
             $admin->save();
+
+            $authenticatedUser = Auth::user();
+
+            $activityLog = new ActivityLog();
+
+            $activityLog->user()->associate($authenticatedUser);
+            $activityLog->data()->associate($admin);
+
+            $activityLog->description = "Admin profile Created";
+
+            $activityLog->save();
+
 
         }
     }
@@ -106,6 +129,18 @@ class AdminController extends Controller
     public function show(Admin $admin, $id)
     {
         $admin = Admin::find($id);
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($admin);
+
+        $activityLog->description = "Retrive Admin Profile";
+
+        $activityLog->save();
+
         return response()->json(['success' => "success", 'admin_user' => $admin], 200);
 
 
@@ -146,15 +181,26 @@ class AdminController extends Controller
      */
     public function getAdminStatics()
     {
-        $adminCount = Admin::where('type', 'Admin')->count();
-        $driverCount = Driver::where('type', 'Driver')->count();
-        $customerCount = Customer::where('type', 'Customer')->count();
+        $adminCount = Admin::count();
+        $activeDriverCount = Driver::where('isActive', '1')->count();
+        $inActiveDriverCount = Driver::where('isActive', '0')->count();
+        $driverCount = Driver::count();
+        $customerCount = Customer::count();
+        $pendingCustomerOrderCount = CustomerOrder::where('status', 'Pending')->count();
+        $CustomerOrderCount = CustomerOrder::count();
+        $transitCustomerOrderCount = CustomerOrder::where('status', 'In Transit')->count();
 
         $adminStatics = [
             'admin' => $adminCount,
             'driver' => $driverCount,
-            'customer' => $customerCount
+            'customer' => $customerCount,
+            'inActiveDrivers' => $inActiveDriverCount,
+            'activeDrivers' => $activeDriverCount,
+            'customerOrders' => $CustomerOrderCount,
+            'pendingCustomerOrders' => $pendingCustomerOrderCount,
+            'transitCustomerOrders' => $transitCustomerOrderCount,
         ];
+
         return response()->json(['success' => "success", 'data' => $adminStatics], 200);
     }
 }
