@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
@@ -160,5 +161,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}', [DriverController::class, 'updateDriver']);
         Route::delete('/{id}', [DriverController::class, 'destroy']);
         Route::get('count/getCount', [DriverController::class, 'getDriverCount']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Driver Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::group(['prefix' => 'activity'], function () {
+        Route::get('/', [ActivityLogController::class, 'getUserActivityLog']);
+        Route::get('/all', [ActivityLogController::class, 'getAllActivityLog']);
+
     });
 });

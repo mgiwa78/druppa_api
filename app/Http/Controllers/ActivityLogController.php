@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\ActivityLog;
 use App\Http\Requests\StoreActivityLogRequest;
 use App\Http\Requests\UpdateActivityLogRequest;
+use App\Models\Admin;
+use Illuminate\Support\Facades\Auth;
 
 class ActivityLogController extends Controller
 {
@@ -35,9 +37,29 @@ class ActivityLogController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ActivityLog $activityLog)
+    public function getUserActivityLog(ActivityLog $activityLog)
     {
-        //
+        $authenticatedUser = Auth::user();
+
+        $authType = get_class($authenticatedUser);
+
+        $userActivities = ActivityLog::where("user_id", "=", $authenticatedUser->id)
+            ->where("user_type", "=", "$authType")->get();
+
+
+        return response()->json(['success' => "success", 'data' => $userActivities], 200);
+
+    }
+    public function getAllActivityLog(ActivityLog $activityLog)
+    {
+
+
+        $authenticatedUser = Auth::user();
+
+        $userActivities = ActivityLog::with("user")->with("data")->get();
+
+        return response()->json(['success' => "success", 'data' => $userActivities], 200);
+
     }
 
     /**

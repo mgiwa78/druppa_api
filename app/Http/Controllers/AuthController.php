@@ -134,6 +134,7 @@ class AuthController extends Controller
                 'phone_number' => 'sometimes|string|max:150',
                 'password' => 'sometimes|max:150',
                 'email' => 'string|max:150',
+                'titile' => 'string|max:150',
                 'gender' => 'string|max:150',
                 'title' => 'string|max:150',
                 'city' => 'string|max:150',
@@ -164,6 +165,7 @@ class AuthController extends Controller
 
                 $admin->address = $request->address;
                 $admin->city = $request->city;
+                $admin->title = $request->title;
                 $admin->state = $request->state;
 
 
