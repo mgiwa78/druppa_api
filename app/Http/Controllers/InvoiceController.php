@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\ActivityLog;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
@@ -15,7 +16,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoices = Invoice::with("customer")->paginate();
+        $invoices = Invoice::with("customer")->with('customer_order')->paginate();
 
         $authenticatedUser = Auth::user();
 
@@ -34,9 +35,35 @@ class InvoiceController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function CreateInvoice(StoreInvoiceRequest $request)
     {
-        //
+        $request->validated();
+
+        $invoice = new Invoice;
+
+        $invoice->customer_id = $request->customer_id;
+        $invoice->customer_order_id = $request->customer_order_id;
+
+
+
+
+        $invoice->save();
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($invoice);
+
+
+        $activityLog->description = "Generated invoice";
+
+        $activityLog->save();
+
+        return response()->json([
+            "data" => $invoice
+        ], 201);
     }
 
     /**
@@ -108,13 +135,42 @@ class InvoiceController extends Controller
         if ($authenticatedUser->type === "Customer") {
 
             if ($size) {
-                $invoices = Invoice::where('customer_id', '=', $authenticatedUser->id)->with('customer')->paginate($size);
+                $invoices = Invoice::where('customer_id', '=', $authenticatedUser->id)->with('customer')->with('customer_order')
+                    ->orderBy('created_at', 'desc')
+                    ->paginate($size);
 
+
+                $responseData = $invoices->items();
+                $responseData = collect($responseData)->map(function ($invoice) {
+                    return [
+                        'id' => $invoice->id,
+                        'customer' => $invoice->customer,
+                        'customer_order_id' => $invoice->customer_order_id,
+                        'customer_id' => $invoice->customer_id,
+                        'customer_order' => $invoice->customer_order,
+                        'payment' => Payment::find($invoice->customer_order->payment_id),
+
+                    ];
+                });
+
+                $paginatedResponse = [
+                    'current_page' => $invoices->currentPage(),
+                    'per_page' => $invoices->perPage(),
+                    'total' => $invoices->total(),
+                    'last_page' => $invoices->lastPage(),
+                    'data' => $responseData,
+                ];
             } else {
-                $invoices = Invoice::where('customer_id', '=', $authenticatedUser->id)->with('customer')->paginate();
+                // $invoices = Invoice::where('customer_id', '=', $authenticatedUser->id)->with('customer')->with([
+                //     'customer_order' => function ($query) {
+                //         $query->with('payment');
+                //     }
+                // ])
+                //     ->orderBy('created_at', 'desc')
+                //     ->paginate($size);
 
             }
-            return response()->json(['message' => 'success', 'data' => $invoices], 200);
+            return response()->json(['message' => 'success', 'data' => $paginatedResponse], 200);
         } else {
             return response()->json(['error' => 'error', 'message' => 'No invoice found'], 404);
 

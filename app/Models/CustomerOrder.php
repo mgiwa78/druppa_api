@@ -18,6 +18,10 @@ class CustomerOrder extends Model
     // {
     //     return $this->hasOne((Delivery::class));
     // }
+    public function payment()
+    {
+        return $this->hasOne((Payment::class));
+    }
     public function activityData(): MorphMany
     {
         return $this->morphMany(ActivityLog::class, 'data');

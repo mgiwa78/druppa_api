@@ -12,18 +12,13 @@ return new class extends Migration {
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->string('customer_id');
-            $table->string('service_rendered');
-            $table->string('delivery_address');
-            $table->string('pickup_address');
-            $table->string('payment_method');
-            $table->string('currency');
-            $table->date('expected_delivery_date');
-            $table->time('expected_delivery_time');
-            $table->string('payment_id');
-            $table->string('paystack_refrence_id');
-            $table->decimal('total_payment', 10, 2);
+            $table->unsignedBigInteger('customer_order_id');
+            $table->unsignedBigInteger('customer_id');
             $table->timestamps();
+
+            $table->foreign('customer_order_id')->references('id')->on('customer_orders')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+
         });
     }
 

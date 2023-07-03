@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
+use App\Models\ActivityLog;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
@@ -29,7 +31,36 @@ class PaymentController extends Controller
      */
     public function store(StorePaymentRequest $request)
     {
-        //
+        $authenticatedUser = Auth::user();
+        $request->validated();
+
+        $payment = new Payment;
+
+        $payment->customer_id = $request->customer_id;
+        $payment->amount = $request->amount;
+        $payment->currency = $request->currency;
+        $payment->payment_method = $request->payment_method;
+        $payment->status = $request->status;
+        $payment->paystack_refrence_id = $request->paystack_refrence_id;
+
+
+        $payment->save();
+
+
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($payment);
+
+
+        $activityLog->description = "Generated invoice";
+
+        $activityLog->save();
+
+        return response()->json([
+            "data" => $payment
+        ], 201);
     }
 
     /**

@@ -22,16 +22,28 @@ class CustomerOrderFactory extends Factory
         return [
             'customer_id' => Customer::factory(),
             'payment_id' => Payment::factory(),
-            'request_title' => $this->faker->sentence(),
-            'request_description' => $this->faker->paragraph(),
-            'total_amount' => $this->faker->randomFloat(2, 100, 1000),
-            'drop_off' => $this->faker->address(),
-            'pick_up' => $this->faker->address(),
-            'status' => $this->faker->randomElement(['Pending', 'In Transit', 'Delivered']),
-            'payment_method' => $this->faker->randomElement(['Credit Card', 'PayPal', 'Bank Transfer']),
-            'payment_status' => $this->faker->boolean(70),
-            'shipment_type' => $this->faker->randomElement(['Standard', 'Express']),
-            'shipment_details' => $this->faker->paragraph(),
+            'shipment_description' => $this->faker->paragraph(),
+
+            'service_rendered' => $this->faker->randomElement(['Fragile Shipments', 'Dropship Shipments', 'Oversized Shipments', 'Perishable Shipments', 'Express Shipments']),
+            'payment_method' => $this->faker->randomElement(['Paystack', 'Cash']),
+            'expected_delivery_date' => $this->faker->dateTime(),
+
+
+            'total_payment' => $this->faker->randomFloat(2, 10, 500),
+            'shipment_weight' => $this->faker->randomFloat(2, 3, 40),
+
+            'dropOff_address' => $this->faker->address,
+            'dropOff_state' => $this->faker->state(),
+            'dropOff_city' => $this->faker->city(),
+            'dropOff_LGA' => $this->faker->cityPrefix(),
+            'pickup_address' => $this->faker->address,
+            'pickup_state' => $this->faker->state(),
+            'pickup_city' => $this->faker->city(),
+            'pickup_lga' => $this->faker->cityPrefix(),
+
+
+
+            'status' => $this->faker->randomElement(['Pending', 'In Transit', 'Pending Pickup', 'Delivered']),
 
         ];
     }

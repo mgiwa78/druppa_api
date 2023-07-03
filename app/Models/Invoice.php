@@ -13,4 +13,12 @@ class Invoice extends Model
     {
         return $this->belongsTo(Customer::class, );
     }
+    public function customer_order()
+    {
+        return $this->belongsTo(CustomerOrder::class, );
+    }
+    // public function payment()
+    // {
+    //     return $this->belongsTo(Payment::class, );
+    // }
 }

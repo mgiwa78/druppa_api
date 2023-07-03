@@ -11,7 +11,7 @@ class StoreInvoiceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class StoreInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'customer_order_id' => 'required',
+            'customer_id' => 'required',
+
         ];
     }
 }

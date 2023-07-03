@@ -17,14 +17,12 @@ return new class extends Migration {
             $table->unsignedBigInteger('customer_order_id');
 
             $table->string('tracking_number');
-            $table->string('status')->default('Pending');
+            $table->string('status')->default('Pending Pickup');
             $table->string('state')->nullable();
             $table->time('time_taken')->nullable();
-            $table->string('city')->nullable();
 
-            $table->integer('distance')->nullable();
-            $table->string('origin')->nullable();
-            $table->string('destination')->nullable();
+
+
 
             $table->timestamp('pickup_date')->nullable();
             $table->timestamp('delivery_date')->nullable();

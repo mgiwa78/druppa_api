@@ -13,10 +13,12 @@ return new class extends Migration {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer_id');
-            $table->float('amount');
+            $table->float('amount', 80, 2);
+            $table->string('currency');
             $table->string('payment_method');
             $table->boolean('status')->default(false);
             $table->timestamps();
+            $table->string('paystack_refrence_id');
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });

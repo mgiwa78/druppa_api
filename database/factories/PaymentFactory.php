@@ -21,6 +21,8 @@ class PaymentFactory extends Factory
         return [
             'customer_id' => Customer::factory(),
             'amount' => $this->faker->randomFloat(2, 10, 100),
+            'paystack_refrence_id' => $this->faker->uuid,
+            'currency' => $this->faker->currencyCode(),
             'payment_method' => $this->faker->randomElement(['Credit Card', 'PayPal', 'Bank Transfer']),
             'status' => $this->faker->boolean(80),
         ];

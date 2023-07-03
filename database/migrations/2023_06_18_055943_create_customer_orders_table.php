@@ -12,19 +12,32 @@ return new class extends Migration {
     {
         Schema::create('customer_orders', function (Blueprint $table) {
             $table->id();
+
             $table->unsignedBigInteger('customer_id');
+
             $table->unsignedBigInteger('payment_id');
-            $table->string('request_title');
-            $table->text('request_description');
-            $table->decimal('total_amount', 10, 2);
+            $table->string('service_rendered');
             $table->string('payment_method');
-            $table->boolean('payment_status')->default(false);
-            $table->string('shipment_type');
+            $table->string('total_payment');
+
+
+            $table->timestamp('expected_delivery_date');
+
+            $table->text('shipment_description');
+
             $table->string('status')->default('Pending');
-            $table->string('drop_off');
-            $table->string('pick_up');
-            $table->text('shipment_details');
             $table->timestamps();
+
+            $table->string('pickup_address');
+            $table->string('pickup_state');
+            $table->string('pickup_lga');
+            $table->string('pickup_city');
+            $table->string('dropOff_LGA');
+            $table->string('dropOff_state');
+
+            $table->string('dropOff_city');
+            $table->string('dropOff_address');
+            $table->string('shipment_weight');
 
             $table->foreign('payment_id')->references('id')->on('payments')->onDelete('restrict');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('restrict');

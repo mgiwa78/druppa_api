@@ -11,7 +11,7 @@ class StoreCustomerOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,21 @@ class StoreCustomerOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'customer_id' => ['required'],
+            'payment_id' => ['required'],
+            'service_rendered' => ['required'],
+            'payment_method' => ['required'],
+            'expected_delivery_date' => ['required'],
+            'shipment_description' => ['required'],
+            'pickup_address' => ['required'],
+            'pickup_state' => ['required'],
+            'pickup_lga' => ['required'],
+            'pickup_city' => ['required'],
+            'dropOff_LGA' => ['required'],
+            'dropOff_city' => ['required'],
+            'dropOff_state' => ['required'],
+            'dropOff_address' => ['required'],
+            'shipment_weight' => ['required'],
         ];
     }
 }

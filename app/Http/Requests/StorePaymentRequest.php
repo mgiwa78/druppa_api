@@ -11,7 +11,7 @@ class StorePaymentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,12 @@ class StorePaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'amount' => ['required'],
+            'payment_method' => ['required'],
+            'currency' => ['required'],
+            'status' => ['required', "boolean"],
+            'paystack_refrence_id' => ['required'],
+            'customer_id' => ['required'],
         ];
     }
 }

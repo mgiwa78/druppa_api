@@ -9,9 +9,11 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\UserController;
 use App\Models\CustomerOrder;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -65,6 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('customer/{id}', [DeliveryController::class, 'getCustomerDelivery']);
 
         Route::get('count/getCount', [DeliveryController::class, 'getDeliveryCount']);
+        Route::patch('driver/assignDelivery/{id}', [DeliveryController::class, 'assignOrderToDriver']);
     });
 
 
@@ -84,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::group(['prefix' => 'invoice'], function () {
         Route::get('/', [InvoiceController::class, 'index']);
+        Route::post('/', [InvoiceController::class, 'CreateInvoice']);
         Route::get('/customer/{size}', [InvoiceController::class, 'getCustomerInvoices']);
 
 
@@ -130,6 +134,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'customerorders'], function () {
         Route::get('/', [CustomerOrderController::class, 'index']);
         Route::get('/{id}', [CustomerOrderController::class, 'show']);
+        Route::post('/', [CustomerOrderController::class, 'create']);
         Route::get('/customer/{id}', [CustomerOrderController::class, 'showCustomerOrder']);
     });
 
@@ -165,7 +170,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Driver Routes
+    | Activity Routes
     |--------------------------------------------------------------------------
     */
 
@@ -173,5 +178,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [ActivityLogController::class, 'getUserActivityLog']);
         Route::get('/all', [ActivityLogController::class, 'getAllActivityLog']);
 
+    });
+    /*
+    |--------------------------------------------------------------------------
+    | Payments Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::group(['prefix' => 'payment'], function () {
+        Route::post('/', [PaymentController::class, 'store']);
     });
 });

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreDeliveryRequest;
 use App\Http\Requests\UpdateDeliveryRequest;
 use App\Models\ActivityLog;
 use App\Models\Customer;
+use App\Models\CustomerOrder;
 use App\Models\Delivery;
 use App\Models\Driver;
 use Illuminate\Http\Request;
@@ -232,5 +233,35 @@ class DeliveryController extends Controller
 
 
     }
+    public function assignOrderToDriver($id)
+    {
+        $authenticatedUser = Auth::user();
 
+        if ($authenticatedUser->type === "Driver") {
+
+            $check = Delivery::where("driver_id", "=", "$authenticatedUser->id")->where("status", "!=", "Delivered")->exists();
+            if ($check) {
+                return response()->json(['error' => 'error', 'message' => 'You Have Incomplete Deliveries'], 401);
+
+            }
+
+            $customer_order = CustomerOrder::find($id);
+
+            $customer_order->status = "Pending Pickup";
+            $customer_order->save();
+
+            $newDelivery = new Delivery();
+
+
+            $newDelivery->customer_id = $customer_order->customer_id;
+            $newDelivery->customer_order_id = $customer_order->id;
+            $newDelivery->status = "Pending Pickup";
+            $newDelivery->driver_id = $authenticatedUser->id;
+
+
+            return response()->json(['success' => "success", 'data' => $check], 200);
+        }
+
+
+    }
 }

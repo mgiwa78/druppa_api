@@ -6,6 +6,8 @@ use App\Models\CustomerOrder;
 use App\Http\Requests\StoreCustomerOrderRequest;
 use App\Http\Requests\UpdateCustomerOrderRequest;
 use App\Models\ActivityLog;
+use App\Models\Customer;
+use App\Models\Delivery;
 use Illuminate\Support\Facades\Auth;
 
 class CustomerOrderController extends Controller
@@ -34,9 +36,55 @@ class CustomerOrderController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(StoreCustomerOrderRequest $request)
     {
-        //
+        $authenticatedUser = Auth::user();
+
+        $request->validated();
+
+        $customerOrder = new CustomerOrder;
+
+        $customerOrder->customer_id = $request->customer_id;
+        $customerOrder->payment_id = $request->payment_id;
+
+        $customerOrder->shipment_description = $request->shipment_description;
+        $customerOrder->service_rendered = $request->service_rendered;
+
+        $customerOrder->pickup_address = $request->pickup_address;
+        $customerOrder->payment_method = $request->payment_method;
+        $customerOrder->expected_delivery_date = $request->expected_delivery_date;
+
+        $customerOrder->pickup_state = $request->pickup_state;
+        $customerOrder->pickup_lga = $request->pickup_lga;
+        $customerOrder->pickup_city = $request->pickup_city;
+
+        $customerOrder->dropOff_LGA = $request->dropOff_LGA;
+        $customerOrder->dropOff_address = $request->dropOff_address;
+        $customerOrder->total_payment = $request->total_payment;
+
+        $customerOrder->dropOff_state = $request->dropOff_state;
+        $customerOrder->dropOff_city = $request->dropOff_city;
+        $customerOrder->shipment_weight = $request->shipment_weight;
+
+
+
+        $customerOrder->save();
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($customerOrder);
+
+
+        $activityLog->description = "Generated invoice";
+
+        $activityLog->save();
+
+        return response()->json([
+            "data" => $customerOrder
+        ], 201);
     }
 
 
@@ -95,10 +143,7 @@ class CustomerOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCustomerOrderRequest $request)
-    {
-        //
-    }
+
 
     /**
      * Display the specified resource.
