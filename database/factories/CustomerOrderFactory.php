@@ -29,14 +29,15 @@ class CustomerOrderFactory extends Factory
             'expected_delivery_date' => $this->faker->dateTime(),
 
 
+            'distance' => $this->faker->randomFloat(2, 30, 70),
             'total_payment' => $this->faker->randomFloat(2, 10, 500),
             'shipment_weight' => $this->faker->randomFloat(2, 3, 40),
 
-            'dropOff_address' => $this->faker->address,
+            'dropOff_address' => $this->faker->address(),
             'dropOff_state' => $this->faker->state(),
             'dropOff_city' => $this->faker->city(),
             'dropOff_LGA' => $this->faker->cityPrefix(),
-            'pickup_address' => $this->faker->address,
+            'pickup_address' => $this->faker->address(),
             'pickup_state' => $this->faker->state(),
             'pickup_city' => $this->faker->city(),
             'pickup_lga' => $this->faker->cityPrefix(),

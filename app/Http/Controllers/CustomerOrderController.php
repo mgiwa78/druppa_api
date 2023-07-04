@@ -57,6 +57,7 @@ class CustomerOrderController extends Controller
         $customerOrder->pickup_state = $request->pickup_state;
         $customerOrder->pickup_lga = $request->pickup_lga;
         $customerOrder->pickup_city = $request->pickup_city;
+        $customerOrder->distance = $request->distance;
 
         $customerOrder->dropOff_LGA = $request->dropOff_LGA;
         $customerOrder->dropOff_address = $request->dropOff_address;
@@ -105,18 +106,27 @@ class CustomerOrderController extends Controller
             return [
                 'id' => $customerOrder->id,
                 'customer' => $customerOrder->customer,
+                'customer_id' => $customerOrder->customer_id,
                 'payment_id' => $customerOrder->payment_id,
-                'request_title' => $customerOrder->request_title,
-                'request_description' => $customerOrder->starequest_descriptiontus,
-                'total_amount' => $customerOrder->total_amount,
                 'payment_method' => $customerOrder->payment_method,
-                'payment_status' => $customerOrder->payment_status,
-                'shipment_type' => $customerOrder->shipment_type,
+                'shipment_description' => $customerOrder->stashipment_descriptiontus,
+                'service_rendered' => $customerOrder->service_rendered,
+                'expected_delivery_date' => $customerOrder->expected_delivery_date,
+                'distance' => $customerOrder->distance,
+
+                'total_payment' => $customerOrder->total_payment,
+                'shipment_weight' => $customerOrder->shipment_weight,
+                'dropOff_address' => $customerOrder->dropOff_address,
+                'dropOff_state' => $customerOrder->dropOff_state,
+                'dropOff_city' => $customerOrder->dropOff_city,
+
+
                 'status' => $customerOrder->status,
-                'drop_off' => $customerOrder->drop_off,
-                'pick_up' => $customerOrder->pick_up,
+                'dropOff_LGA' => $customerOrder->dropOff_LGA,
+                'pickup_address' => $customerOrder->pickup_address,
+                'pickup_state' => $customerOrder->pickup_state,
+                'pickup_lga' => $customerOrder->pickup_lga,
                 'created_at' => $customerOrder->created_at,
-                'shipment_details' => $customerOrder->shipment_details,
             ];
         });
 
@@ -139,6 +149,37 @@ class CustomerOrderController extends Controller
         $activityLog->save();
 
         return response()->json(['success' => "success", 'data' => $paginatedResponse], 200);
+    }
+    public function showCustomersOrders($size)
+    {
+        $authenticatedUser = Auth::user();
+
+
+        if ($size) {
+            $customerOrders = CustomerOrder::where('customer_id', '=', $authenticatedUser->id)->with('customer')->with("delivery")->orderByDesc('created_at')->with([
+                'delivery' => function ($query) {
+                    $query->with('driver');
+                }
+            ])->orderByDesc('created_at')->paginate($size);
+
+        } else {
+            $customerOrders = CustomerOrder::where('customer_id', '=', $authenticatedUser->id)->with('customer')->with("delivery")->orderByDesc('created_at')->paginate();
+
+        }
+
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+
+
+        $activityLog->description = "Access Customer Orders Orders";
+
+        $activityLog->save();
+
+        return response()->json(['success' => "success", 'data' => $customerOrders], 200);
     }
     /**
      * Store a newly created resource in storage.

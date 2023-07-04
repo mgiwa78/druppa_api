@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->string('tracking_number');
             $table->string('status')->default('Pending Pickup');
             $table->string('state')->nullable();
-            $table->time('time_taken')->nullable();
+            $table->integer('time_taken')->nullable();
 
 
 

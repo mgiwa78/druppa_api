@@ -68,6 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('count/getCount', [DeliveryController::class, 'getDeliveryCount']);
         Route::patch('driver/assignDelivery/{id}', [DeliveryController::class, 'assignOrderToDriver']);
+        Route::get('driver/getDriverOngoingDeliveries', [DeliveryController::class, 'getDriverOngoingDeliveries']);
     });
 
 
@@ -136,6 +137,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [CustomerOrderController::class, 'show']);
         Route::post('/', [CustomerOrderController::class, 'create']);
         Route::get('/customer/{id}', [CustomerOrderController::class, 'showCustomerOrder']);
+        Route::get('all/customer/{size}', [CustomerOrderController::class, 'showCustomersOrders']);
     });
 
 
@@ -166,6 +168,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}', [DriverController::class, 'updateDriver']);
         Route::delete('/{id}', [DriverController::class, 'destroy']);
         Route::get('count/getCount', [DriverController::class, 'getDriverCount']);
+        Route::post('verify/pickup', [DriverController::class, 'verifyPickup']);
+        Route::post('verify/dropoff', [DriverController::class, 'verifyDropOff']);
     });
 
     /*

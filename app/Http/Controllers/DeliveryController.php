@@ -233,6 +233,22 @@ class DeliveryController extends Controller
 
 
     }
+    public function getDriverOngoingDeliveries()
+    {
+        $authenticatedUser = Auth::user();
+        if ($authenticatedUser->type === "Driver") {
+
+            $deliveries = Delivery::where('driver_id', '=', $authenticatedUser->id)->where("status", "!=", "Delivered")->with('driver')->with('customer')->paginate();
+
+            return response()->json(['message' => 'success', 'data' => $deliveries], 200);
+        } else {
+            return response()->json(['error' => 'error', 'message' => 'No driver found'], 404);
+
+        }
+
+
+
+    }
     public function assignOrderToDriver($id)
     {
         $authenticatedUser = Auth::user();
@@ -247,8 +263,14 @@ class DeliveryController extends Controller
 
             $customer_order = CustomerOrder::find($id);
 
+            $check22 = Delivery::where("customer_order_id", "=", "$id")->exists();
+            if ($check22) {
+                return response()->json(['error' => 'error', 'message' => 'Delivery Is Already active'], 401);
+            }
+
             $customer_order->status = "Pending Pickup";
             $customer_order->save();
+
 
             $newDelivery = new Delivery();
 
@@ -257,9 +279,11 @@ class DeliveryController extends Controller
             $newDelivery->customer_order_id = $customer_order->id;
             $newDelivery->status = "Pending Pickup";
             $newDelivery->driver_id = $authenticatedUser->id;
+            $newDelivery->tracking_number = Str::uuid()->toString();
 
+            $newDelivery->save();
 
-            return response()->json(['success' => "success", 'data' => $check], 200);
+            return response()->json(['success' => "success", 'data' => $newDelivery], 200);
         }
 
 

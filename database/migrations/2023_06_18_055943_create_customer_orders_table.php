@@ -30,6 +30,7 @@ return new class extends Migration {
 
             $table->string('pickup_address');
             $table->string('pickup_state');
+            $table->string('distance');
             $table->string('pickup_lga');
             $table->string('pickup_city');
             $table->string('dropOff_LGA');

@@ -8,7 +8,9 @@ use App\Http\Requests\UpdateDriverRequest;
 use App\Models\ActivityLog;
 use App\Models\Admin;
 use App\Models\Customer;
+use App\Models\CustomerOrder;
 use App\Models\Delivery;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -286,7 +288,68 @@ class DriverController extends Controller
         $count = Driver::count();
         return response()->json(['count' => $count], 200);
     }
+    public function verifyPickup(Request $request)
+    {
 
+        $authenticatedUser = Auth::user();
+        if ($authenticatedUser->type === "Driver") {
+
+            $tracking_number = $request->tracking_number;
+
+            $delivery = Delivery::where("tracking_number", $tracking_number)->first();
+
+            if ($delivery) {
+                if ($delivery->status === "Pending Pickup") {
+                    $delivery->status = "In Transit";
+                    $delivery->pickup_date = Carbon::now();
+                    $delivery->save();
+
+                    $order = CustomerOrder::find($delivery->customer_order_id);
+                    $order->status = "In Transit";
+
+                    return response()->json(['success' => 'success', 'message' => 'Pickup Updated Successfully'], 200);
+                } else {
+                    return response()->json(['error' => 'error', 'message' => 'Invalid Tracking Number'], 404);
+                }
+            } else {
+                return response()->json(['error' => 'error', 'message' => 'Invalid Tracking Number'], 404);
+            }
+
+        } else {
+            return response()->json(['error' => 'error', 'message' => 'You are not permitted'], 402);
+
+        }
+    }
+
+    public function verifyDropOff(Request $request)
+    {
+
+        $authenticatedUser = Auth::user();
+        if ($authenticatedUser->type === "Driver") {
+
+            $tracking_number = $request->tracking_number;
+
+            $delivery = Delivery::where("tracking_number", $tracking_number)->first();
+
+            if ($delivery) {
+                if ($delivery->status === "In Transit") {
+                    $delivery->status = "Delivered";
+                    $delivery->pickup_date = Carbon::now();
+                    $delivery->save();
+
+                    return response()->json(['success' => 'success', 'message' => 'Shipment Delivered'], 200);
+                } else {
+                    return response()->json(['error' => 'error', 'message' => 'Invalid Tracking Number'], 404);
+                }
+            } else {
+                return response()->json(['error' => 'error', 'message' => 'Invalid Tracking Number'], 404);
+            }
+
+        } else {
+            return response()->json(['error' => 'error', 'message' => 'You are not permitted'], 402);
+
+        }
+    }
     public function getDriverStatics()
     {
         $authenticatedUser = Auth::user();
@@ -294,13 +357,14 @@ class DriverController extends Controller
             $driverId = $authenticatedUser->id;
 
             $totalDeliveries = Delivery::where('driver_id', $driverId)->count();
-            $totalDistance = Delivery::where('driver_id', $driverId)->sum('distance');
-            $totalTime = Delivery::where('driver_id', $driverId)->sum('time_taken');
+            $Data = Delivery::where('driver_id', $driverId)->with("customer_order")->get();
 
-            $performance = DB::table('deliveries')
-                ->selectRaw('SUM(time_taken) AS total_time, SUM(distance) AS total_distance, COUNT(*) AS total_deliveries')
-                ->where('driver_id', $driverId)
-                ->first();
+            $totalDistance = $Data->sum(function ($delivery) {
+                return $delivery->customer_order->distance;
+            });
+
+            $totalTime = $Data->sum('time_taken');
+
             $performanceRate = ($totalDistance / $totalTime) * $totalDeliveries;
 
             return response()->json([

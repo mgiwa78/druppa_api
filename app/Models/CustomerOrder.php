@@ -14,10 +14,11 @@ class CustomerOrder extends Model
     {
         return $this->belongsTo((Customer::class));
     }
-    // public function delivery()
-    // {
-    //     return $this->hasOne((Delivery::class));
-    // }
+
+    public function delivery()
+    {
+        return $this->hasOne((Delivery::class));
+    }
     public function payment()
     {
         return $this->hasOne((Payment::class));
