@@ -23,5 +23,16 @@ class CustomerSeeder extends Seeder
             ->hasInvoice(12)
             ->create()
         ;
+
+
+        Customer::factory()
+            ->create([
+                'email' => 'customer@mail.com',
+                'type' => 'Customer',
+                'firstName' => 'Muhammad',
+                'lastName' => 'Giwa',
+                'title' => 'Mr',
+                'password' => bcrypt('Password'),
+            ]);
     }
 }

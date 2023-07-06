@@ -44,7 +44,7 @@ class CustomerOrderFactory extends Factory
 
 
 
-            'status' => $this->faker->randomElement(['Pending', 'In Transit', 'Pending Pickup', 'Delivered']),
+            'status' => "Pending",
 
         ];
     }

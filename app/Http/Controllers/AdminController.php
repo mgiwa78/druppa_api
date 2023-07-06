@@ -114,6 +114,77 @@ class AdminController extends Controller
 
         }
     }
+    public function edit(Request $request)
+    {
+
+
+        $admin = Admin::find($request->id);
+
+        $validation = Validator::make($request->all(), [
+            'firstName' => 'required|string|max:150',
+            'lastName' => 'required|string|max:150',
+            'phone_number' => 'required|string|max:150',
+            'email' => 'email|string|max:150',
+
+        ]);
+
+        if ($validation->fails()) {
+            return response()->json(['error' => $validation->errors()], 422);
+        } else {
+
+            if ($request->file('profile')) {
+
+                $file = $request->file('profile');
+                $file_name = hexdec(uniqid()) . '.' . $file->extension();
+                $file->move('./storage/druppa_customer_profiles', $file_name);
+                $admin->profile = '/storage/druppa_customer_profiles/' . $file_name;
+            }
+
+            $admin->firstName = $request->firstName;
+            $admin->lastName = $request->lastName;
+            $admin->username = $request->username;
+            $admin->email = $request->email;
+
+            $admin->phone_number = $request->phone_number;
+
+
+
+            if ($request->permissions) {
+                $permissions = explode(",", $request->permissions);
+                $id = $admin->id;
+
+
+                foreach ($permissions as $key => $permission) {
+                    $perm = new Permission;
+                    $perm->admin_id = $id;
+
+                    $check = Permission::where("admin_id", "=", "$id")->where("permission", "=", "$permission")->where("status", "=", "Active")->exists();
+
+                    if ($check) {
+                        return response()->json(['error' => 'error', 'message' => "Permission: $permission already assigned"], 404);
+                    }
+                    $perm->status = "Active";
+                    $perm->permission = $permission;
+                    $perm->save();
+                }
+            }
+            $admin->save();
+
+            $authenticatedUser = Auth::user();
+
+            $activityLog = new ActivityLog();
+
+            $activityLog->user()->associate($authenticatedUser);
+            $activityLog->data()->associate($admin);
+
+            $activityLog->description = "Admin profile Created";
+
+            $activityLog->save();
+
+            return response()->json(['success' => "success", 'message' => "Admin Updated"], 200);
+
+        }
+    }
 
     /**
      * Store a newly created resource in storage.

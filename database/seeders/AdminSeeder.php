@@ -17,5 +17,15 @@ class AdminSeeder extends Seeder
             ->count(30)
             ->hasPermissions(5)
             ->create();
+
+        Admin::factory()
+            ->create([
+                'email' => 'admin@mail.com',
+                'type' => 'Admin',
+                'firstName' => 'Muhammad',
+                'lastName' => 'Giwa',
+                'title' => 'Mr',
+                'password' => bcrypt('Password'),
+            ]);
     }
 }

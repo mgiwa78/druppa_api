@@ -332,9 +332,24 @@ class DriverController extends Controller
             $delivery = Delivery::where("tracking_number", $tracking_number)->first();
 
             if ($delivery) {
-                if ($delivery->status === "In Transit") {
+                if (true) {
                     $delivery->status = "Delivered";
-                    $delivery->pickup_date = Carbon::now();
+
+                    $order = CustomerOrder::find($delivery->customer_order_id);
+                    $order->status = "Delivered";
+                    $order->save();
+
+                    $delivery_date = Carbon::now();
+
+                    $delivery->delivery_date = $delivery_date;
+                    $pickup_date = Carbon::parse($delivery->pickup_date);
+
+                    $interval = $pickup_date->diff($delivery_date);
+                    $totalMinutes = ($interval->days * 24 * 60) + ($interval->h * 60) + $interval->i;
+
+
+                    $delivery->time_taken = $totalMinutes;
+
                     $delivery->save();
 
                     return response()->json(['success' => 'success', 'message' => 'Shipment Delivered'], 200);
@@ -356,17 +371,21 @@ class DriverController extends Controller
         if ($authenticatedUser->type === "Driver") {
             $driverId = $authenticatedUser->id;
 
-            $totalDeliveries = Delivery::where('driver_id', $driverId)->count();
-            $Data = Delivery::where('driver_id', $driverId)->with("customer_order")->get();
+            $totalDeliveries = Delivery::where('driver_id', $driverId)->where('status', "Delivered")->count();
+            $totalDistance = 0;
+            $performanceRate = 0;
+            if ($totalDeliveries) {
+                $Data = Delivery::where('driver_id', $driverId)->with("customer_order")->get();
 
-            $totalDistance = $Data->sum(function ($delivery) {
-                return $delivery->customer_order->distance;
-            });
+                $totalDistance = $Data->sum(function ($delivery) {
+                    return $delivery->customer_order->distance;
+                });
 
-            $totalTime = $Data->sum('time_taken');
+                $totalTime = $Data->sum('time_taken');
 
-            $performanceRate = ($totalDistance / $totalTime) * $totalDeliveries;
+                $performanceRate = ($totalDistance / $totalTime) * $totalDeliveries;
 
+            }
             return response()->json([
                 'message' => 'success',
                 'data' => [

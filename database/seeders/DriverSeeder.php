@@ -13,6 +13,14 @@ class DriverSeeder extends Seeder
      */
     public function run(): void
     {
-
+        Driver::factory()
+            ->create([
+                'email' => 'driver@mail.com',
+                'type' => 'Driver',
+                'firstName' => 'Muhammad',
+                'lastName' => 'Giwa',
+                'title' => 'Mr',
+                'password' => bcrypt('Password'),
+            ]);
     }
 }

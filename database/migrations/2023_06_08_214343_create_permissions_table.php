@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->index(['admin_id', 'permission']);
         });
 
-        DB::statement("ALTER TABLE permissions ADD CONSTRAINT check_active_permission CHECK (status != 'Active' OR (status = 'Active' AND permission IS NULL))");
+        // DB::statement("ALTER TABLE permissions ADD CONSTRAINT check_active_permission CHECK (status != 'Active' OR (status = 'Active' AND permission IS NULL))");
     }
 
     /**

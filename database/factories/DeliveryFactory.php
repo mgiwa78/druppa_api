@@ -23,7 +23,7 @@ class DeliveryFactory extends Factory
         return [
             'customer_id' => Customer::factory(),
             'tracking_number' => $this->faker->uuid(),
-            'status' => $this->faker->randomElement(['Pending Pickup', 'In Transit', 'Delivered']),
+            'status' => 'Delivered',
             'time_taken' => $this->faker->randomFloat(2, 10, 500),
 
             'pickup_date' => $this->faker->dateTimeBetween('-1 month', '+1 month'),

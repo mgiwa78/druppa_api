@@ -43,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'customers'], function () {
         Route::get('/', [CustomerController::class, 'fetchCustomerProfiles']);
         Route::get('/{id}', [CustomerController::class, 'fetchProfile']);
+        Route::put('/{id}', [CustomerController::class, 'updateCustomerProfile']);
         Route::post('/', [CustomerController::class, 'store']);
         Route::delete('/{id}', [CustomerController::class, 'destroy']);
 
@@ -151,6 +152,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [AdminController::class, 'fetchAdminProfiles']);
         Route::get('/{id}', [AdminController::class, 'show']);
         Route::post('/', [AdminController::class, 'create']);
+        Route::put('/', [AdminController::class, 'edit']);
         Route::delete('/{id}', [AdminController::class, 'destroy']);
         Route::get('count/getCount', [AdminController::class, 'getAdminCount']);
     });

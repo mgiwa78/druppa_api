@@ -22,7 +22,7 @@ class DeliveryController extends Controller
     public function getCustomerDelivery($id)
     {
 
-        $deliveries = Delivery::where('customer_id', '=', $id)->with('driver')->paginate();
+        $deliveries = Delivery::where('customer_id', '=', $id)->with('driver')->with("customer_order")->paginate();
 
 
         $responseData = $deliveries->items();
@@ -31,10 +31,9 @@ class DeliveryController extends Controller
                 'id' => $delivery->id,
                 'customer_id' => $delivery->customer_id,
                 'customer_order_id' => $delivery->customer_order_id,
+                'customer_order' => $delivery->customer_order,
                 'tracking_number' => $delivery->tracking_number,
                 'status' => $delivery->status,
-                'state' => $delivery->state,
-                'city' => $delivery->city,
                 'origin' => $delivery->origin,
                 'destination' => $delivery->destination,
                 'pickup_date' => $delivery->pickup_date,
@@ -68,7 +67,7 @@ class DeliveryController extends Controller
     }
     public function index()
     {
-        $deliveries = Delivery::with('driver')->with("customer")->paginate();
+        $deliveries = Delivery::with('driver')->with("customer")->with("customer_order")->paginate();
 
         $responseData = $deliveries->items();
         $responseData = collect($responseData)->map(function ($delivery) {
@@ -76,6 +75,7 @@ class DeliveryController extends Controller
                 'id' => $delivery->id,
                 'customer' => $delivery->customer,
                 'customer_order_id' => $delivery->customer_order_id,
+                'customer_order' => $delivery->customer_order,
                 'tracking_number' => $delivery->tracking_number,
                 'status' => $delivery->status,
                 'state' => $delivery->state,
@@ -238,7 +238,7 @@ class DeliveryController extends Controller
         $authenticatedUser = Auth::user();
         if ($authenticatedUser->type === "Driver") {
 
-            $deliveries = Delivery::where('driver_id', '=', $authenticatedUser->id)->where("status", "!=", "Delivered")->with('driver')->with('customer')->paginate();
+            $deliveries = Delivery::where('driver_id', '=', $authenticatedUser->id)->where("status", "!=", "Delivered")->with('driver')->with("customer_order")->with('customer')->get();
 
             return response()->json(['message' => 'success', 'data' => $deliveries], 200);
         } else {
