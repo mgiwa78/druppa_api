@@ -10,6 +10,9 @@ use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CouponController;
+use App\Http\Controllers\RetainershipCustomerController;
+use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\UserController;
 use App\Models\CustomerOrder;
@@ -78,7 +81,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [AuthController::class, 'updateProfile']);
         Route::post('/emailUpdate', [AuthController::class, 'updateEmail']);
         Route::post('/passwordUpdate', [AuthController::class, 'updatePassword']);
-
     });
 
     /*
@@ -91,8 +93,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [InvoiceController::class, 'index']);
         Route::post('/', [InvoiceController::class, 'CreateInvoice']);
         Route::get('/customer/{size}', [InvoiceController::class, 'getCustomerInvoices']);
-
-
     });
     /*
 |--------------------------------------------------------------------------
@@ -105,9 +105,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/fetchDriverDeliveries', [DeliveryController::class, 'getDriverDeliveries']);
     Route::get('/getPendingOrders/{size}', [CustomerOrderController::class, 'showPendingOrders']);
     Route::post('/stateUpdate', [DriverController::class, 'stateUpdate']);
-
-
-
 
     /*
     |--------------------------------------------------------------------------
@@ -129,6 +126,25 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | Warehousing Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::group(['prefix' => 'warehouses'], function () {
+        Route::get('/', [WarehouseController::class, 'index']);
+        Route::post('/', [WarehouseController::class, 'store']);
+        Route::get('/{id}', [WarehouseController::class, 'show']);
+        Route::put('/{id}', [WarehouseController::class, 'update']);
+        Route::delete('/{id}', [WarehouseController::class, 'destroy']);
+
+        Route::post('/{warehouseId}/request-warehousing', [WarehouseController::class, 'requestWarehousing']);
+        Route::post('/{warehouseId}/send-products-for-warehousing', [WarehouseController::class, 'sendProductsForWarehousing']);
+        Route::post('/products/{productId}/request-delivery', [WarehouseController::class, 'requestDelivery']);
+        Route::get('/customers/{customerId}/track-records', [WarehouseController::class, 'trackRecords']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
     | CustomerOrder Routes
     |--------------------------------------------------------------------------
     */
@@ -141,6 +157,34 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('all/customer/{size}', [CustomerOrderController::class, 'showCustomersOrders']);
     });
 
+    /*
+    |--------------------------------------------------------------------------
+    | Retainership Customers Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::group(['prefix' => 'retainership-customers'], function () {
+        Route::get('/', [RetainershipCustomerController::class, 'index']);
+        Route::get('/{id}', [RetainershipCustomerController::class, 'show']);
+        Route::post('/', [RetainershipCustomerController::class, 'store']);
+        Route::put('/{id}', [RetainershipCustomerController::class, 'update']);
+        Route::delete('/{id}', [RetainershipCustomerController::class, 'destroy']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cupon Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::group(['prefix' => 'coupon'], function () {
+        Route::post('/', [CouponController::class, 'store']);
+        Route::get('/', [CouponController::class, 'index']);
+        Route::get('/{id}', [CouponController::class, 'show']);
+        Route::put('/{id}', [CouponController::class, 'update']);
+        Route::delete('/{id}', [CouponController::class, 'destroy']);
+        Route::post('/{coupon_id}/assign/{customer_id}', [CouponController::class, 'assignToCustomer']);
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -183,7 +227,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'activity'], function () {
         Route::get('/', [ActivityLogController::class, 'getUserActivityLog']);
         Route::get('/all', [ActivityLogController::class, 'getAllActivityLog']);
-
     });
     /*
     |--------------------------------------------------------------------------

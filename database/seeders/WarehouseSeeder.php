@@ -5,17 +5,21 @@ namespace Database\Seeders;
 use App\Models\Warehouse;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
+
 
 class WarehouseSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        Warehouse::factory()
-            ->count(10)
-            ->hasInventory(6)
-            ->create();
+        $faker = Faker::create();
+
+        for ($i = 1; $i <= 5; $i++) {
+            Warehouse::create([
+                'name' => $faker->company,
+                'location' => $faker->address,
+                'capacity' => $faker->numberBetween(1000, 5000),
+            ]);
+        }
     }
 }

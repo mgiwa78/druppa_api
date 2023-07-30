@@ -20,6 +20,10 @@ class DatabaseSeeder extends Seeder
             DeliverySeeder::class,
             WarehouseSeeder::class,
             CustomerOrderSeeder::class,
+            CouponSeeder::class,
+            RetainershipCustomersSeeder::class,
+            ProductSeeder::class,
+            RecordSeeder::class,
         ]);
     }
 }
