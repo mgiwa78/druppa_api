@@ -13,6 +13,9 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\RetainershipCustomerController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CategoryProductController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\UserController;
 use App\Models\CustomerOrder;
@@ -32,10 +35,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'customerRegister']);
+// Route::post('/login', [AuthController::class, 'login']);
+// Route::post('/register', [AuthController::class, 'customerRegister']);
 
-Route::middleware('auth:sanctum')->group(function () {
+// Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
@@ -105,6 +108,35 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/fetchDriverDeliveries', [DeliveryController::class, 'getDriverDeliveries']);
     Route::get('/getPendingOrders/{size}', [CustomerOrderController::class, 'showPendingOrders']);
     Route::post('/stateUpdate', [DriverController::class, 'stateUpdate']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Resturant Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::group(['prefix' => 'restaurants'], function () {
+        // Restaurants
+        Route::get('/', [RestaurantController::class, 'index']);
+        Route::post('/', [RestaurantController::class, 'store']);
+        Route::get('/{restaurant}', [RestaurantController::class, 'show']);
+        Route::put('/{restaurant}', [RestaurantController::class, 'update']);
+        Route::delete('/{restaurant}', [RestaurantController::class, 'destroy']);
+
+        // Categories
+        Route::get('/{restaurant}/categories', [CategoryController::class, 'index']);
+        Route::post('/{restaurant}/categories', [CategoryController::class, 'store']);
+        Route::get('/{restaurant}/categories/{category}', [CategoryController::class, 'show']);
+        Route::put('/{restaurant}/categories/{category}', [CategoryController::class, 'update']);
+        Route::delete('/{restaurant}/categories/{category}', [CategoryController::class, 'destroy']);
+
+        // Category Products
+        Route::get('/{restaurant}/categories/{category}/products', [CategoryProductController::class, 'index']);
+        Route::post('/{restaurant}/categories/{category}/products', [CategoryProductController::class, 'store']);
+        Route::get('/{restaurant}/categories/{category}/products/{product}', [CategoryProductController::class, 'show']);
+        Route::put('/{restaurant}/categories/{category}/products/{product}', [CategoryProductController::class, 'update']);
+        Route::delete('/{restaurant}/categories/{category}/products/{product}', [CategoryProductController::class, 'destroy']);
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -237,4 +269,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'payment'], function () {
         Route::post('/', [PaymentController::class, 'store']);
     });
-});
+// });

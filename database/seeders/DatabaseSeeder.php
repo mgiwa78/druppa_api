@@ -24,6 +24,9 @@ class DatabaseSeeder extends Seeder
             RetainershipCustomersSeeder::class,
             ProductSeeder::class,
             RecordSeeder::class,
+            RestaurantSeeder::class,
+            CategorySeeder::class,
+            CategoryProductSeeder::class,
         ]);
     }
 }
