@@ -35,10 +35,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-// Route::post('/login', [AuthController::class, 'login']);
-// Route::post('/register', [AuthController::class, 'customerRegister']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'customerRegister']);
 
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
@@ -269,4 +269,4 @@ use Illuminate\Support\Facades\Route;
     Route::group(['prefix' => 'payment'], function () {
         Route::post('/', [PaymentController::class, 'store']);
     });
-// });
+});
