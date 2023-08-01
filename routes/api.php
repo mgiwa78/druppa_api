@@ -35,10 +35,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'customerRegister']);
+// Route::post('/login', [AuthController::class, 'login']);
+// Route::post('/register', [AuthController::class, 'customerRegister']);
 
-Route::middleware('auth:sanctum')->group(function () {
+// Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
@@ -55,6 +55,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
         Route::get('count/getCount', [CustomerController::class, 'getCustomerCount']);
+        // Customer Request For Inventory
+        Route::post('/{id}/request-inventory', [CustomerController::class, 'requestInventory']);
     });
 
     /*
@@ -154,6 +156,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('customer/{id}', [InventoryController::class, 'getCustomerInventory']);
 
         Route::get('count/getCount', [InventoryController::class, 'getInventoryCount']);
+
+        // Routes for Delivery Requests
+        Route::post('/{id}/request-delivery', [InventoryController::class, 'requestDelivery']);
     });
 
     /*
@@ -269,4 +274,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'payment'], function () {
         Route::post('/', [PaymentController::class, 'store']);
     });
-});
+// });

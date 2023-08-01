@@ -10,6 +10,13 @@ class Inventory extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'customer_id',
+        'product_description',
+        'quantity',
+        'warehouse_id',
+    ];
+    
     public function customer()
     {
         return $this->belongsTo((Customer::class));

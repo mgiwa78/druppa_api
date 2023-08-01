@@ -6,12 +6,39 @@ use App\Models\ActivityLog;
 use App\Models\Customer;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
+use App\Models\DeliveryRequest;
+use App\Http\Requests\InventoryDeliveryRequest;
+use App\Http\Requests\StoreDeliveryRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class InventoryController extends Controller
 {
+    
+    public function requestDelivery(InventoryDeliveryRequest $request, $id)
+    {
+        $inventory = Inventory::findOrFail($id);
 
+        $deliveryRequest = new DeliveryRequest();
+        $deliveryRequest->inventory_id = $inventory->id;
+        $deliveryRequest->customer_id = $request->customer_id;
+        $deliveryRequest->address = $request->destination;
+        $deliveryRequest->quantity_requested = $request->quantity_requested;
+        $deliveryRequest->save();
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($deliveryRequest);
+
+        $activityLog->description = "Delivery Request Created";
+
+        $activityLog->save();
+
+        return response()->json(['success' => true, 'data' => $deliveryRequest], 201);
+    }
 
     public function getCustomerInventory($customerId)
     {

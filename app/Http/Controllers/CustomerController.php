@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Inventory;
 use App\Models\CustomerActivity;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use App\Http\Requests\StoreInventoryRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\ActivityLog;
@@ -23,7 +25,22 @@ class CustomerController extends Controller
      */
 
 
+    public function requestInventory(StoreInventoryRequest $request, $id)
+    {
+        // Retrieve the customer with the given ID
+        $customer = Customer::findOrFail($id);
 
+        // Create a new inventory for the customer
+        $inventory = new Inventory();
+        $inventory->customer_id = $customer->id;
+        $inventory->product_description = $request->product_description;
+        $inventory->quantity = $request->quantity;
+        $inventory->warehouse_id = $request->warehouse_id;
+        $inventory->save();
+
+        // Return a response indicating the success
+        return response()->json(['success' => true, 'data' => $inventory], 201);
+    }
     /**
      * Display a listing of thCustomere resource.
      */
