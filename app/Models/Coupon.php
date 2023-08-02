@@ -10,19 +10,20 @@ class Coupon extends Model
     use HasFactory;
 
     protected $fillable = [
-        'code', // 'code' to allow mass assignment for the 'code' attribute
-        'discount',
-        'valid_from',
-        'valid_until',
-        'max_uses',
-        'current_uses',
-        'user_id',
+        'code',
+        'forUser',
+        'validFrom',
+        'percentageDiscount',
+        'reductionAmount',
+        'validUntil',
+        'maxUses',
+        'currentUses',
+        'couponType',
     ];
 
-    public function customers()
+
+    public function couponRecords()
     {
-        return $this->belongsToMany(Customer::class, 'customer_coupon')
-            ->withTimestamps();
+        return $this->hasMany(CouponRecord::class);
     }
-    
 }

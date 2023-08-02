@@ -2,41 +2,53 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCouponRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Coupon;
+use App\Models\CouponRecords;
 use App\Models\Customer;
 
 class CouponController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreCouponRequest $request)
     {
         // Validate the input
-        $request->validate([
-            'code' => 'required|unique:coupons',
-            'discount' => 'required|numeric|min:0',
-            'valid_from' => 'required|date',
-            'valid_until' => 'required|date|after:valid_from',
-            'max_uses' => 'required|integer|min:1',
-            'user_id' => 'required|integer|min:1',
-        ]);
+        // $request->validate([
+        //     'code' => 'required|unique:coupons',
+        //     'percentage_discount' => 'sometimes|numeric|min:1|max:100',
+        //     'reduction_amount' => 'sometimes|numeric|min:1',
+        //     'valid_from' => 'required|date',
+        //     'coupon_type' => 'required|string',
+        //     'valid_until' => 'required|date|after:valid_from',
+        //     'max_uses' => 'required|integer|min:1',
+        //     'for_user' => 'required|array|min:1',
+        // ]);
 
-        // // Create the coupon
-        // $coupon = Coupon::create($request->all());
 
-        // Create the coupon and associate it with the admin user
-        $coupon = Coupon::create(array_merge($request->all(), [
-            'user_id' => Auth::id(), // Assuming you are using Laravel's built-in authentication
-        ]));
+        $couponData = $request->except('forUser');
+        $coupon = Coupon::create($couponData);
 
-        return response()->json($coupon, 201);
+        $coupon->percentage_discount = $request->percentage_discount;
+
+        $couponRecord = new CouponRecords();
+
+        foreach ($request->forUser as $key => $user) {
+            $couponRecord->customer_id = $user;
+            $couponRecord->coupon_id = $coupon->id;
+        }
+
+        $couponRecord->save();
+
+
+        return response()->json($request->forUser, 201);
     }
 
     public function index()
     {
-        $coupons = Coupon::all();
+        $coupons = Coupon::paginate();
+        return response()->json(['success' => "success", 'data' => $coupons], 201);
 
-        return response()->json($coupons);
     }
 
     public function show($id)
@@ -44,6 +56,15 @@ class CouponController extends Controller
         $coupon = Coupon::findOrFail($id);
 
         return response()->json($coupon);
+    }
+
+    public function getCouponCustomers($couponId)
+    {
+        $customersWithCoupon = Customer::whereHas('couponRecords', function ($query) use ($couponId) {
+            $query->where('coupon_id', $couponId);
+        })->paginate();
+        return response()->json(['success' => "success", 'data' => $customersWithCoupon], 200);
+
     }
 
     public function update(Request $request, $id)

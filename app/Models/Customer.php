@@ -54,6 +54,11 @@ class Customer extends Authenticatable
     {
         return $this->hasMany(Delivery::class);
     }
+
+    public function couponRecords()
+    {
+        return $this->hasMany(CouponRecords::class, 'customer_id');
+    }
     public function inventries()
     {
         return $this->hasMany(Inventory::class);

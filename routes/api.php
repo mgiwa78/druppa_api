@@ -35,10 +35,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-// Route::post('/login', [AuthController::class, 'login']);
-// Route::post('/register', [AuthController::class, 'customerRegister']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'customerRegister']);
 
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
@@ -218,6 +218,7 @@ use Illuminate\Support\Facades\Route;
         Route::post('/', [CouponController::class, 'store']);
         Route::get('/', [CouponController::class, 'index']);
         Route::get('/{id}', [CouponController::class, 'show']);
+        Route::get('/customers/{couponId}', [CouponController::class, 'getCouponCustomers']);
         Route::put('/{id}', [CouponController::class, 'update']);
         Route::delete('/{id}', [CouponController::class, 'destroy']);
         Route::post('/{coupon_id}/assign/{customer_id}', [CouponController::class, 'assignToCustomer']);
@@ -274,4 +275,4 @@ use Illuminate\Support\Facades\Route;
     Route::group(['prefix' => 'payment'], function () {
         Route::post('/', [PaymentController::class, 'store']);
     });
-// });
+});

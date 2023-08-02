@@ -16,22 +16,24 @@ class CouponSeeder extends Seeder
         // Create sample coupons
         Coupon::create([
             'code' => 'SUMMER2023',
-            'discount' => 10.00,
-            'valid_from' => now(),
-            'valid_until' => now()->addMonth(),
-            'max_uses' => 100,
-            'current_uses' => 0,
-            'user_id' => 1, // Assuming the admin user has ID 1
+            'percentageDiscount' => 10.00,
+            'validFrom' => now(),
+            'validUntil' => now()->addMonth(),
+            'maxUses' => 100,
+            'status' => true,
+            'couponType' => "percentageDiscount",
+            'currentUses' => 0,
         ]);
 
         Coupon::create([
-            'code' => 'SALE50',
-            'discount' => 50.00,
-            'valid_from' => now(),
-            'valid_until' => now()->addMonth(),
-            'max_uses' => 50,
-            'current_uses' => 0,
-            'user_id' => 1, // Assuming the admin user has ID 1
+            'code' => 'EID2023',
+            'reductionAmount' => 500,
+            'validFrom' => now(),
+            'validUntil' => now()->addMonth(),
+            'maxUses' => 100,
+            'status' => true,
+            'couponType' => "reductionDiscount",
+            'currentUses' => 0,
         ]);
     }
 }

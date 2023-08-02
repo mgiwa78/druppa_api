@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,11 +13,14 @@ return new class extends Migration
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
-            $table->decimal('discount', 8, 2);
-            $table->dateTime('valid_from');
-            $table->dateTime('valid_until');
-            $table->integer('max_uses')->unsigned();
-            $table->integer('current_uses')->unsigned()->default(0);
+            $table->dateTime('validFrom');
+            $table->dateTime('validUntil');
+            $table->string('couponType')->default("percentageDiscount");
+            $table->boolean('status')->default(false);
+            $table->decimal('reductionAmount')->default(0);
+            $table->integer('percentageDiscount')->default(0);
+            $table->integer('maxUses')->unsigned();
+            $table->integer('currentUses')->unsigned()->default(0);
             $table->timestamps();
         });
     }

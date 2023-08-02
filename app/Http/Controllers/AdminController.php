@@ -36,11 +36,11 @@ class AdminController extends Controller
 
         if ($pageSize) {
             $admin_users = Admin::with('permissions')->paginate($pageSize);
-            return response()->json(['success' => "success", 'data' => $admin_users], 201);
+            return response()->json(['success' => "success", 'data' => $admin_users], 200);
 
         } else {
             $admin_users = Admin::with('permissions')->paginate();
-            return response()->json(['success' => "success", 'data' => $admin_users], 201);
+            return response()->json(['success' => "success", 'data' => $admin_users], 200);
 
         }
 
