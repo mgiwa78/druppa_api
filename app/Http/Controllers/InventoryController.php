@@ -13,20 +13,24 @@ class InventoryController extends Controller
 {
 
 
-    public function getCustomerInventory($customerId)
+    public function getCustomerInventory($size)
     {
-        $customer = Customer::findOrFail($customerId);
-        $inventries = $customer->inventries()->get();
-
+            $authenticatedUser = Auth::user();
+        $customer = Customer::findOrFail($authenticatedUser->id);
+        
+        if ($size) {$inventries = $customer->inventries()->with("customer")->with("warehouse")->paginate($size);}else{
+            $inventries = $customer->inventries()->with("customer")->with("warehouse")->paginate();
+        }
         $authenticatedUser = Auth::user();
 
         $activityLog = new ActivityLog();
 
         $activityLog->user()->associate($authenticatedUser);
+        
         $activityLog->data()->associate($inventries);
 
 
-        $activityLog->description = "Driver Profile Updated";
+        $activityLog->description = "Inventory view";
 
         $activityLog->save();
 

@@ -156,7 +156,7 @@ class CustomerOrderController extends Controller
 
 
         if ($size) {
-            $customerOrders = CustomerOrder::where('customer_id', '=', $authenticatedUser->id)->with('customer')->with("delivery")->orderByDesc('created_at')->with([
+            $customerOrders = CustomerOrder::where('customer_id', '=', $authenticatedUser->id)->with('customer')->with([
                 'delivery' => function ($query) {
                     $query->with('driver');
                 }
