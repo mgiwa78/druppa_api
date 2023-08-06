@@ -18,6 +18,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryProductController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WalletController;
 use App\Models\CustomerOrder;
 use App\Models\Payment;
 use Illuminate\Http\Request;
@@ -57,6 +58,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('count/getCount', [CustomerController::class, 'getCustomerCount']);
         // Customer Request For Inventory
         Route::post('/{id}/request-inventory', [CustomerController::class, 'requestInventory']);
+    });
+
+     /*
+    |--------------------------------------------------------------------------
+    | Wallet Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::group(['prefix' => 'wallet'], function () {
+        Route::get('/{id}', [WalletController::class, 'balance']);
+        Route::post('/withdraw', [WalletController::class, 'withdraw']);
+        Route::post('/deposit', [WalletController::class, 'deposit']);
     });
 
     /*

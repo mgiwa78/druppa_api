@@ -34,6 +34,14 @@ class CouponController extends Controller
         $couponRecord = new CouponRecords();
 
         foreach ($request->forUser as $key => $user) {
+            $customer = Customer::find($user);
+            $wallet = $customer->wallet;
+
+            if ($wallet->balance < $coupon->percentage_discount) {
+                return response()->json(['message' => 'Insufficient balance to assign coupon.'], 400);
+            }
+
+            $wallet->withdraw($coupon->percentage_discount);
             $couponRecord->customer_id = $user;
             $couponRecord->coupon_id = $coupon->id;
         }
