@@ -16,7 +16,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoices = Invoice::with("customer")->with('customer_order')->paginate();
+        $invoices = Invoice::with("customer")->with('customer_order')->withTimestamps()->paginate();
 
         $authenticatedUser = Auth::user();
 
@@ -148,6 +148,8 @@ class InvoiceController extends Controller
                         'customer_order_id' => $invoice->customer_order_id,
                         'customer_id' => $invoice->customer_id,
                         'customer_order' => $invoice->customer_order,
+                        'created_at' => $invoice->created_at,
+                        'uppdated_at' => $invoice->uppdated_at,
                         'payment' => Payment::find($invoice->customer_order->payment_id),
 
                     ];

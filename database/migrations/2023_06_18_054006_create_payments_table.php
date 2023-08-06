@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('payment_method');
             $table->boolean('status')->default(false);
             $table->timestamps();
-            $table->string('paystack_refrence_id');
+            $table->string('paystack_refrence_id')->nullable();
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });

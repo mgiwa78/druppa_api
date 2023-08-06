@@ -14,10 +14,7 @@ class StoreCouponRecordsRequest extends FormRequest
         return true;
     }
 
-    protected function prepareForValidation()
-    {
-        $this->merge(['postal_code' => $this->postalCode]);
-    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -26,7 +23,9 @@ class StoreCouponRecordsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'customer_id' => ['required_if:allow_all,false'],
+            'coupon_id' => 'required',
+            'allow_all' => 'sometimes',
         ];
     }
 }

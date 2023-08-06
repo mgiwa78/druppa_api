@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('coupon_records', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('customer_id');
+            $table->string('customer_id');
             $table->unsignedBigInteger('coupon_id');
             $table->timestamps();
         });

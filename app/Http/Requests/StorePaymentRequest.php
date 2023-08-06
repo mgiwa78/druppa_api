@@ -26,7 +26,7 @@ class StorePaymentRequest extends FormRequest
             'payment_method' => ['required'],
             'currency' => ['required'],
             'status' => ['required', "boolean"],
-            'paystack_refrence_id' => ['required'],
+            'paystack_refrence_id' => ['required_if:payment_method,Online'],
             'customer_id' => ['required'],
         ];
     }

@@ -23,27 +23,19 @@ class CustomerOrderFactory extends Factory
             'customer_id' => Customer::factory(),
             'payment_id' => Payment::factory(),
             'shipment_description' => $this->faker->paragraph(),
+            'delivery_instructions' => $this->faker->paragraph(),
 
-            'service_rendered' => $this->faker->randomElement(['Fragile Shipments', 'Dropship Shipments', 'Oversized Shipments', 'Perishable Shipments', 'Express Shipments']),
-            'payment_method' => $this->faker->randomElement(['Paystack', 'Cash']),
-            'expected_delivery_date' => $this->faker->dateTime(),
+            'package_type' => $this->faker->randomElement(['Fragile Shipments', 'Dropship Shipments', 'Oversized Shipments', 'Perishable Shipments', 'Express Shipments']),
+            'payment_type' => $this->faker->randomElement(['Paystack', 'Cash']),
+            'location_type' => $this->faker->randomElement(["Inter-State", "Within-State"]),
 
 
-            'distance' => $this->faker->randomFloat(2, 30, 70),
             'total_payment' => $this->faker->randomFloat(2, 10, 500),
-            'shipment_weight' => $this->faker->randomFloat(2, 3, 40),
-
-            'dropOff_address' => $this->faker->address(),
-            'dropOff_state' => $this->faker->state(),
-            'dropOff_city' => $this->faker->city(),
-            'dropOff_LGA' => $this->faker->cityPrefix(),
+            'origin' => $this->faker->state(),
+            'dropoff_address' => $this->faker->address(),
+            'dropoff_state' => $this->faker->state(),
             'pickup_address' => $this->faker->address(),
             'pickup_state' => $this->faker->state(),
-            'pickup_city' => $this->faker->city(),
-            'pickup_lga' => $this->faker->cityPrefix(),
-
-
-
             'status' => "Pending",
 
         ];

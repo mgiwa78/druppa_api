@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Coupon;
 use App\Models\CouponRecords;
 use App\Models\Customer;
+use Carbon\Carbon;
 
 class CouponController extends Controller
 {
@@ -66,10 +67,44 @@ class CouponController extends Controller
         return response()->json(['success' => "success", 'data' => $customersWithCoupon], 200);
 
     }
+    public function validateCoupon(Request $request)
+    {
+        $authenticatedUser = Auth::user();
+        $request->validate([
+            'coupon_code' => 'required|exists:coupons,code',
+        ]);
+
+        $coupon = Coupon::where('code', $request->coupon_code)->first();
+
+        if (!$coupon) {
+            return response()->json(['message' => 'Coupon not found.'], 404);
+        }
+
+        $now = Carbon::now();
+        if ($coupon->validFrom > $now || $coupon->validUntil < $now) {
+            return response()->json(['message' => 'Coupon is not valid.'], 400);
+        }
+
+        if ($coupon->currentUses >= $coupon->maxUses) {
+            return response()->json(['message' => 'Coupon has reached its maximum usage.'], 400);
+        }
+
+        $confirmIfAllowed = CouponRecords::where([
+            'coupon_id' => $coupon->id,
+            'customer_id' => $authenticatedUser->id,
+        ])->first();
+
+        if (!$confirmIfAllowed) {
+            return response()->json(['message' => 'Coupon is not allowed for this customer.'], 403);
+        }
+
+        $coupon->increment('currentUses');
+        return response()->json(['success' => "success", 'data' => $coupon], 200);
+
+    }
 
     public function update(Request $request, $id)
     {
-        // Validate the input
         $request->validate([
             'code' => 'required|unique:coupons,code,' . $id,
             'discount' => 'required|numeric|min:0',
