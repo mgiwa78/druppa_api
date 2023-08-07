@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('delivery_requests', function (Blueprint $table) {
+        Schema::create('inventory_delivery_requests', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('inventory_id');
             $table->unsignedBigInteger('customer_id');
             $table->string('address');
             $table->integer('quantity_requested');
             $table->timestamps();
-
-            // Define foreign key constraints
             $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });

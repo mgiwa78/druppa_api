@@ -49,7 +49,7 @@ class CouponController extends Controller
         $couponRecord->save();
 
 
-        return response()->json($request->forUser, 201);
+        return response()->json(['success' => "success", 'data' => $coupon], 201);
     }
 
     public function index()
@@ -63,7 +63,7 @@ class CouponController extends Controller
     {
         $coupon = Coupon::findOrFail($id);
 
-        return response()->json($coupon);
+        return response()->json(['success' => "success", 'data' => $coupon, 'message' => 'Coupon retrieved successfully.', ], 200);
     }
 
     public function getCouponCustomers($couponId)
@@ -90,7 +90,7 @@ class CouponController extends Controller
         $coupon = Coupon::findOrFail($id);
         $coupon->update($request->all());
 
-        return response()->json($coupon);
+        return response()->json(['success' => "success", 'data' => $coupon, 'message' => 'Coupon updated successfully.', ], 200);
     }
 
     public function destroy($id)
@@ -98,7 +98,7 @@ class CouponController extends Controller
         $coupon = Coupon::findOrFail($id);
         $coupon->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['success' => "success", 'message' => 'Coupon deleted successfully.', ], 200);
     }
 
 

@@ -14,9 +14,9 @@ class CreateRecordsTable extends Migration
         Schema::create('records', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->string('action'); // e.g., "sent_for_warehousing", "requested_delivery"
+            $table->string('action');
             $table->integer('quantity');
-            $table->string('address')->nullable(); // Used for "requested_delivery" action
+            $table->string('address')->nullable();
             $table->timestamps();
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

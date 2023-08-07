@@ -10,13 +10,13 @@ class RetainershipCustomerController extends Controller
     public function index()
     {
         $retainershipCustomers = RetainershipCustomer::all();
-        return response()->json($retainershipCustomers);
+        return response()->json([ 'success' => "success", 'data' => $retainershipCustomers, 'message' => 'Retainership customers retrieved successfully.', ], 200);
     }
 
     public function show($id)
     {
         $retainershipCustomer = RetainershipCustomer::find($id);
-        return response()->json($retainershipCustomer);
+        return response()->json([ 'success' => "success", 'data' => $retainershipCustomer, 'message' => 'Retainership customer retrieved successfully.', ], 200);
     }
 
     public function store(Request $request)
@@ -29,7 +29,7 @@ class RetainershipCustomerController extends Controller
         ]);
 
         $retainershipCustomer = RetainershipCustomer::create($validatedData);
-        return response()->json($retainershipCustomer, 201);
+        return response()->json([ 'success' => "success", 'data' => $retainershipCustomer, 'message' => 'Retainership customer created successfully.', ], 201);
     }
 
     public function update(Request $request, $id)
@@ -43,7 +43,7 @@ class RetainershipCustomerController extends Controller
 
         $retainershipCustomer = RetainershipCustomer::findOrFail($id);
         $retainershipCustomer->update($validatedData);
-        return response()->json($retainershipCustomer, 200);
+        return response()->json([ 'success' => "success", 'data' => $retainershipCustomer, 'message' => 'Retainership customer updated successfully.', ], 200);
     }
 
     public function destroy($id)

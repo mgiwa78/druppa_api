@@ -19,7 +19,6 @@ class WalletController extends Controller
             return response()->json(['message' => 'Customer not found.'], 404);
         }
 
-        // Check if the customer has a wallet. If not, create a new one.
         if (!$customer->wallet) {
             $wallet = new Wallet(['balance' => 0]);
             $customer->wallet()->save($wallet);
