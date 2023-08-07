@@ -16,6 +16,7 @@ use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryProductController;
+use App\Http\Controllers\CouponRecordsController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WalletController;
@@ -230,11 +231,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'coupon'], function () {
         Route::post('/', [CouponController::class, 'store']);
         Route::get('/', [CouponController::class, 'index']);
+        Route::post('/verify', [CouponController::class, 'validateCoupon']);
         Route::get('/{id}', [CouponController::class, 'show']);
         Route::get('/customers/{couponId}', [CouponController::class, 'getCouponCustomers']);
         Route::put('/{id}', [CouponController::class, 'update']);
         Route::delete('/{id}', [CouponController::class, 'destroy']);
         Route::post('/{coupon_id}/assign/{customer_id}', [CouponController::class, 'assignToCustomer']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Coupon Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::group(['prefix' => 'coupon'], function () {
+        Route::post('/', [CouponRecordsController::class, 'create']);
+
     });
 
     /*

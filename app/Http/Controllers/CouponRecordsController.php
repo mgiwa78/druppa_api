@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CouponRecords;
 use App\Http\Requests\StoreCouponRecordsRequest;
+use App\Http\Requests\StoreCouponRequest;
 use App\Http\Requests\UpdateCouponRecordsRequest;
 
 class CouponRecordsController extends Controller
@@ -19,9 +20,16 @@ class CouponRecordsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(StoreCouponRecordsRequest $request)
     {
-        //
+        $request->validated();
+        $newCouponRecord = new CouponRecords();
+
+        $newCouponRecord->customer_id = $request->customer_id;
+        $newCouponRecord->coupon_id = $request->coupon_id;
+        $newCouponRecord->save();
+
+        return response()->json(['success' => true, 'data' => $newCouponRecord], 200);
     }
 
     /**

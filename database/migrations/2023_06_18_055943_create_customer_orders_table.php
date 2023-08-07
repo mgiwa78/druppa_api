@@ -12,34 +12,22 @@ return new class extends Migration {
     {
         Schema::create('customer_orders', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('customer_id');
-
+            $table->unsignedBigInteger('customer_id')->nullable();
             $table->unsignedBigInteger('payment_id');
-            $table->string('service_rendered');
-            $table->string('payment_method');
-            $table->string('total_payment');
-
-
-            $table->timestamp('expected_delivery_date');
-
-            $table->text('shipment_description');
-
-            $table->string('status')->default('Pending');
+            $table->string('package_type')->nullable();
+            $table->string('payment_type')->nullable();
+            $table->string('origin')->nullable();
+            $table->string('coupon_id')->nullable();
+            $table->string('shipment_description')->nullable();
+            $table->string('total_payment')->nullable();
+            $table->string('delivery_instructions')->nullable();
+            $table->string('location_type')->nullable();
+            $table->string('status')->default('Pending')->nullable();
             $table->timestamps();
-
-            $table->string('pickup_address');
-            $table->string('pickup_state');
-            $table->string('distance');
-            $table->string('pickup_lga');
-            $table->string('pickup_city');
-            $table->string('dropOff_LGA');
-            $table->string('dropOff_state');
-
-            $table->string('dropOff_city');
-            $table->string('dropOff_address');
-            $table->string('shipment_weight');
-
+            $table->string('pickup_address')->nullable();
+            $table->string('pickup_state')->nullable();
+            $table->string('dropoff_state')->nullable();
+            $table->string('dropoff_address')->nullable();
             $table->foreign('payment_id')->references('id')->on('payments')->onDelete('restrict');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('restrict');
         });

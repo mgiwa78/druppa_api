@@ -24,19 +24,16 @@ class StoreCustomerOrderRequest extends FormRequest
         return [
             'customer_id' => ['required'],
             'payment_id' => ['required'],
-            'service_rendered' => ['required'],
-            'payment_method' => ['required'],
-            'expected_delivery_date' => ['required'],
+            'package_type' => ['required'],
+            'payment_type' => ['required'],
             'shipment_description' => ['required'],
+            'origin' => ['required'],
+            'delivery_instructions' => ['required'],
             'pickup_address' => ['required'],
-            'pickup_state' => ['required'],
-            'pickup_lga' => ['required'],
-            'pickup_city' => ['required'],
-            'dropOff_LGA' => ['required'],
-            'dropOff_city' => ['required'],
-            'dropOff_state' => ['required'],
-            'dropOff_address' => ['required'],
-            'shipment_weight' => ['required'],
+            'location_type' => ['required'],
+            'pickup_state' => ['required_if:location_type,Inter-State'],
+            'dropoff_state' => ['required_if:location_type,Inter-State'],
+            'dropoff_address' => ['required'],
         ];
     }
 }
