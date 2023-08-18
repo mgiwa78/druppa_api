@@ -20,6 +20,12 @@ class AdminController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function test()
+    {
+            $admin_users = Admin::get();
+            return response()->json(['success' => "success", 'data' => $admin_users], 200);
+
+    }
     public function fetchAdminProfiles()
     {
         $authenticatedUser = Auth::user();
