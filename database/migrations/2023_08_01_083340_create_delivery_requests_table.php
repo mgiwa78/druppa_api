@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('delivery_requests', function (Blueprint $table) {
+        Schema::create('inventory_delivery_requests', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('inventory_id');
             $table->unsignedBigInteger('customer_id');
