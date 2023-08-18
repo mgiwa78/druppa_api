@@ -28,7 +28,9 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             CategoryProductSeeder::class,
             DeliveryRequestSeeder::class,
-
+            WalletTransactionsSeeder::class,
+            VendorSeeder::class,
+            VendorItemCategorySeeder::class,
         ]);
     }
 }

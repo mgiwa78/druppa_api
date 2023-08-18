@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->string("phone_number")->nullable();
             $table->string("address")->nullable();
             $table->string("profile")->nullable();
-            $table->decimal('balance', 8, 2);
+            $table->decimal('balance', 8, 2)->default(0);
             $table->string("city")->nullable();
             $table->string("state")->nullable();
             $table->rememberToken();

@@ -51,7 +51,7 @@ class Customer extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function delivery()
+    public function deliveries()
     {
         return $this->hasMany(Delivery::class);
     }
@@ -91,5 +91,14 @@ class Customer extends Authenticatable
     public function activityPerformer(): MorphMany
     {
         return $this->morphMany(ActivityLog::class, 'user');
+    }
+
+    public function inventoryDeliveryRequest()
+    {
+        return $this->hasMany(InventoryDeliveryRequest::class);
+    }
+    public function walletTransactions()
+    {
+        return $this->hasMany(WalletTransactions::class, 'customer_id');
     }
 }

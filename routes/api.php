@@ -17,11 +17,17 @@ use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryProductController;
 use App\Http\Controllers\CouponRecordsController;
+use App\Http\Controllers\InventoryDeliveryRequestController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VendorController;
+use App\Http\Controllers\VendorItemCategoryController;
+use App\Http\Controllers\VendorItemController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\WalletTransactionsController;
 use App\Models\CustomerOrder;
 use App\Models\Payment;
+use App\Models\VendorItemCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -61,16 +67,74 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/request-inventory', [CustomerController::class, 'requestInventory']);
     });
 
-     /*
+    /*
     |--------------------------------------------------------------------------
-    | Wallet Routes
+    | Vendor Routes
     |--------------------------------------------------------------------------
     */
+
+    Route::group(['prefix' => 'vendors'], function () {
+        Route::get('/', [VendorController::class, 'index']);
+        Route::post('/', [VendorController::class, 'store']);
+        Route::put('/{id}', [VendorController::class, 'edit']);
+    });
+    /*
+    |--------------------------------------------------------------------------
+    | VendorItemCategories Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::group(['prefix' => 'vendorItemCategories'], function () {
+        Route::get('/', [VendorItemCategoryController::class, 'index']);
+    });
+    /*
+    |--------------------------------------------------------------------------
+    | VendorItem Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::group(['prefix' => 'vendorItem'], function () {
+        Route::post('/', [VendorItemController::class, 'store']);
+        Route::get('/', [VendorItemController::class, 'index']);
+        Route::put('/', [VendorItemController::class, 'update']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | inventoryDeliveryRequest Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::group(['prefix' => 'inventoryDeliveryRequest'], function () {
+        Route::get('/', [InventoryDeliveryRequestController::class, 'index']);
+        Route::get('/confirmQuantity/{inventory_id}', [InventoryDeliveryRequestController::class, 'confirmQuantity']);
+        Route::get('/{id}', [InventoryDeliveryRequestController::class, 'show']);
+        Route::put('/{id}', [InventoryDeliveryRequestController::class, 'edit']);
+        Route::post('/', [InventoryDeliveryRequestController::class, 'store']);
+        Route::post('/approveRequest', [InventoryDeliveryRequestController::class, 'deliveryRequestApproval']);
+        Route::delete('/{id}', [InventoryDeliveryRequestController::class, 'destroy']);
+    });
+
+    /*
+   |--------------------------------------------------------------------------
+   | Wallet Routes
+   |--------------------------------------------------------------------------
+   */
 
     Route::group(['prefix' => 'wallet'], function () {
         Route::get('/{id}', [WalletController::class, 'balance']);
         Route::post('/withdraw', [WalletController::class, 'withdraw']);
         Route::post('/deposit', [WalletController::class, 'deposit']);
+    });
+    /*
+   |--------------------------------------------------------------------------
+   | WalletTransactions Routes
+   |--------------------------------------------------------------------------
+   */
+
+    Route::group(['prefix' => 'walletTransactions'], function () {
+        Route::get('/myCummulativeTransactions', [WalletTransactionsController::class, 'myCummulativeTransactions']);
+        Route::get('/', [WalletTransactionsController::class, 'index']);
     });
 
     /*

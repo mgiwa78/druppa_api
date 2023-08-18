@@ -5,21 +5,22 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Wallet;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Auth;
 
 class WalletController extends Controller
 {
     public function deposit(Request $request)
     {
-        $customerId = $request->input('customer_id');
-        $amount = $request->input('amount');
+        $authenticatedUser = Auth::user();
 
-        $customer = Customer::find($customerId);
+        $amount = $request->amount;
+
+        $customer = Customer::find($authenticatedUser->id);
 
         if (!$customer) {
             return response()->json(['message' => 'Customer not found.'], 404);
         }
 
-        // Check if the customer has a wallet. If not, create a new one.
         if (!$customer->wallet) {
             $wallet = new Wallet(['balance' => 0]);
             $customer->wallet()->save($wallet);
@@ -27,9 +28,10 @@ class WalletController extends Controller
 
         $wallet = $customer->wallet;
 
-        $wallet->deposit($amount);
+        $wallet->deposit((int) $amount);
 
-        return response()->json(['message' => 'Wallet successfully deposited.'], 200);
+        return response()->json(['success' => "success", 'data' => $wallet], 200);
+
     }
 
 
@@ -52,8 +54,11 @@ class WalletController extends Controller
 
     public function balance($id)
     {
-        $wallet = Wallet::findOrFail($id);
-
-        return response()->json(['balance' => $wallet->balance], 200);
+        $wallet = Wallet::where("customer_id", $id)->first();
+        if ($wallet) {
+            return response()->json(['success' => "success", 'data' => $wallet->balance], 200);
+        } else {
+            return response()->json(['success' => "success", 'data' => 0], 200);
+        }
     }
 }

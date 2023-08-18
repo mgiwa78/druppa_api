@@ -13,6 +13,7 @@ use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\Permission;
 use App\Models\User;
+use App\Models\Vendor;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
@@ -42,7 +43,8 @@ class AuthController extends Controller
         $request->type === 'Admin' ?
             $user = Admin::where('email', $credentials['email'])->first() : (
                 $request->type === 'Customer' ?
-                $user = Customer::where('email', $credentials['email'])->first() : $user = Driver::where('email', $credentials['email'])->first());
+                $user = Customer::where('email', $credentials['email'])->first() : ($request->type === 'Vendor' ?
+                    $user = Vendor::where('email', $credentials['email'])->first() : $user = Driver::where('email', $credentials['email'])->first()));
 
 
 
@@ -84,6 +86,21 @@ class AuthController extends Controller
                     $token = $user->createToken('druppa::driver')->plainTextToken;
 
                     $authenticatedUser = Auth::guard('driver')->user();
+                    return response()->json(['user' => $authenticatedUser, 'token' => $token]);
+
+                } else {
+                    return response()->json(['message' => 'Invalid login credentials'], 401);
+                }
+            }
+            if ($request->type === 'Vendor') {
+                if (Auth::guard('vendor')->attempt($credentials)) {
+
+                    $activityLog->description = "Vendor Login";
+                    $activityLog->save();
+
+                    $token = $user->createToken('druppa::vendor')->plainTextToken;
+
+                    $authenticatedUser = Auth::guard('vendor')->user();
                     return response()->json(['user' => $authenticatedUser, 'token' => $token]);
 
                 } else {

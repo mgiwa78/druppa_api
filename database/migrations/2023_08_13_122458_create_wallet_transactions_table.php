@@ -10,16 +10,18 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('delivery_requests', function (Blueprint $table) {
+        Schema::create('wallet_transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('inventory_id');
-            $table->unsignedBigInteger('customer_id');
-            $table->string('address');
-            $table->integer('quantity_requested');
+
+            $table->unsignedBigInteger("customer_id");
+            $table->unsignedBigInteger("customer_order_id")->nullable();
+            $table->string('paymentType');
+            $table->string('amount');
             $table->timestamps();
 
-            $table->foreign('inventory_id')->references('id')->on('inventories')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->foreign('customer_order_id')->references('id')->on('customer_orders')->onDelete('cascade');
+
         });
     }
 
@@ -28,6 +30,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('delivery_requests');
+        Schema::dropIfExists('wallet_transactions');
     }
 };

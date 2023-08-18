@@ -16,7 +16,7 @@ class CustomerSeeder extends Seeder
     {
         Customer::factory()
             ->count(1)
-            ->hasDelivery(1)
+            ->hasDeliveries(1)
             ->hasInventries(1)
             ->hasOrders(1)
             ->hasPayment(1)
@@ -24,8 +24,11 @@ class CustomerSeeder extends Seeder
             ->create()
         ;
 
-
         Customer::factory()
+            ->hasInventries(5)
+            ->hasOrders(5)
+            ->hasPayment(5)
+            ->hasInvoice(5)
             ->create([
                 'email' => 'customer@mail.com',
                 'type' => 'Customer',

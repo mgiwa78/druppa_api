@@ -14,17 +14,7 @@ class CouponController extends Controller
 {
     public function store(StoreCouponRequest $request)
     {
-        // Validate the input
-        // $request->validate([
-        //     'code' => 'required|unique:coupons',
-        //     'percentage_discount' => 'sometimes|numeric|min:1|max:100',
-        //     'reduction_amount' => 'sometimes|numeric|min:1',
-        //     'valid_from' => 'required|date',
-        //     'coupon_type' => 'required|string',
-        //     'valid_until' => 'required|date|after:valid_from',
-        //     'max_uses' => 'required|integer|min:1',
-        //     'for_user' => 'required|array|min:1',
-        // ]);
+
 
 
         $couponData = $request->except('forUser');

@@ -16,10 +16,14 @@ class Warehouse extends Model
     {
         return $this->hasMany(Product::class);
     }
-    
+
     public function Inventory()
     {
         return $this->hasMany(Inventory::class);
+    }
+    public function InventoryDeliveryRequest()
+    {
+        return $this->hasMany(InventoryDeliveryRequest::class);
     }
 
     public function activityData(): MorphMany
