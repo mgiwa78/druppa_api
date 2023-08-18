@@ -66,7 +66,6 @@ return [
 'pgsql' => [
     'driver' => 'pgsql',
     'host' => env('POSTGRES_HOST'),
-    'url' => env('POSTGRES_URL'),
     'port' => env('POSTGRES_PORT', '5432'),
     'database' => env('POSTGRES_DATABASE'),
     'username' => env('POSTGRES_USER'),
