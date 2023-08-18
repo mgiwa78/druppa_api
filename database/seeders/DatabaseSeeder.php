@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             RestaurantSeeder::class,
             CategorySeeder::class,
             CategoryProductSeeder::class,
-            DeliveryRequestSeeder::class,
+            // DeliveryRequestSeeder::class,
             WalletTransactionsSeeder::class,
             VendorSeeder::class,
             VendorItemCategorySeeder::class,
