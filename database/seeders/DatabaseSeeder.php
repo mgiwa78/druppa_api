@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            LocationSeeder::class,
             CustomerSeeder::class,
             DriverSeeder::class,
             AdminSeeder::class,
@@ -21,13 +22,11 @@ class DatabaseSeeder extends Seeder
             WarehouseSeeder::class,
             CustomerOrderSeeder::class,
             CouponSeeder::class,
-            RetainershipCustomersSeeder::class,
             ProductSeeder::class,
             RecordSeeder::class,
             RestaurantSeeder::class,
             CategorySeeder::class,
             CategoryProductSeeder::class,
-            // DeliveryRequestSeeder::class,
             WalletTransactionsSeeder::class,
             VendorSeeder::class,
             VendorItemCategorySeeder::class,

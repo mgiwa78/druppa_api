@@ -67,7 +67,11 @@ class DeliveryController extends Controller
     }
     public function index()
     {
-        $deliveries = Delivery::with('driver')->with("customer")->with("customer_order")->paginate();
+        $authenticatedUser = Auth::user();
+
+        $deliveries = Delivery::with('driver')->with("customer")->with("customer_order")->whereHas('customer', function ($query) use ($authenticatedUser) {
+            $query->where('location_id', $authenticatedUser->location_id);
+        })->paginate();
 
         $responseData = $deliveries->items();
         $responseData = collect($responseData)->map(function ($delivery) {
@@ -96,7 +100,6 @@ class DeliveryController extends Controller
             'data' => $responseData,
         ];
 
-        $authenticatedUser = Auth::user();
 
         $activityLog = new ActivityLog();
 

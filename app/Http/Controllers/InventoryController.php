@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 
 class InventoryController extends Controller
 {
-    
+
     public function requestDelivery(InventoryDeliveryRequest $request, $id)
     {
         $inventory = Inventory::findOrFail($id);
@@ -42,10 +42,12 @@ class InventoryController extends Controller
 
     public function getCustomerInventory($size)
     {
-            $authenticatedUser = Auth::user();
+        $authenticatedUser = Auth::user();
         $customer = Customer::findOrFail($authenticatedUser->id);
-        
-        if ($size) {$inventries = $customer->inventries()->with("customer")->with("warehouse")->paginate($size);}else{
+
+        if ($size) {
+            $inventries = $customer->inventries()->with("customer")->with("warehouse")->paginate($size);
+        } else {
             $inventries = $customer->inventries()->with("customer")->with("warehouse")->paginate();
         }
         $authenticatedUser = Auth::user();
@@ -53,7 +55,7 @@ class InventoryController extends Controller
         $activityLog = new ActivityLog();
 
         $activityLog->user()->associate($authenticatedUser);
-        
+
         $activityLog->data()->associate($inventries);
 
 
@@ -67,7 +69,10 @@ class InventoryController extends Controller
     }
     public function index()
     {
-        $inventories = Inventory::with('warehouse')->with("customer")->paginate();
+        $authenticatedUser = Auth::user();
+        $inventories = Inventory::with('warehouse')->with("customer")->whereHas('customer', function ($query) use ($authenticatedUser) {
+            $query->where('location_id', $authenticatedUser->location_id);
+        })->paginate();
 
         $responseData = $inventories->items();
         $responseData = collect($responseData)->map(function ($inventory) {
@@ -92,7 +97,7 @@ class InventoryController extends Controller
         ];
 
 
-        $authenticatedUser = Auth::user();
+
 
         $activityLog = new ActivityLog();
 

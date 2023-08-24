@@ -20,14 +20,18 @@ return new class extends Migration {
             $table->string("lastName");
             $table->string("title")->nullable();
             $table->string("username")->nullable();
+
             $table->timestamp("last_login")->nullable();
             $table->string("gender")->nullable();
             $table->string("email")->nullable()->unique();
-
             $table->string("profile")->nullable();
             $table->string("city")->nullable();
+            $table->boolean("super")->default(false)->nullable();
             $table->string("address")->nullable();
             $table->string("state")->nullable();
+
+            $table->unsignedBigInteger("location_id")->nullable();
+            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
         });
     }
 

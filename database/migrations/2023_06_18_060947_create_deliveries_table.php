@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->string('state')->nullable();
 
             $table->string('type')->default("logistics");
-            $table->integer('time_taken')->nullable();
+            $table->float('time_taken')->nullable();
 
             $table->timestamp('pickup_date')->nullable();
             $table->timestamp('delivery_date')->nullable();

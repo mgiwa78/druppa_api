@@ -42,4 +42,8 @@ class Driver extends Authenticatable
     {
         return $this->morphMany(ActivityLog::class, 'user');
     }
+    public function driverLocation()
+    {
+        return $this->belongsTo(Location::class);
+    }
 }

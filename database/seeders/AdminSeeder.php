@@ -15,13 +15,13 @@ class AdminSeeder extends Seeder
     {
         Admin::factory()
             ->count(30)
-            ->hasPermissions(5)
             ->create();
 
         Admin::factory()
             ->create([
                 'email' => 'admin@mail.com',
                 'type' => 'Admin',
+                'location_id' => 1,
                 'firstName' => 'Muhammad',
                 'lastName' => 'Giwa',
                 'title' => 'Mr',

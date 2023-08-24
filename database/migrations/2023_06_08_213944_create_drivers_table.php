@@ -22,6 +22,8 @@ return new class extends Migration {
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string("type");
+            $table->unsignedBigInteger("location_id")->nullable();
+
             $table->string("title");
             $table->string("gender");
             $table->string("address");
@@ -32,6 +34,8 @@ return new class extends Migration {
             $table->string('licensePlate')->nullable();
             $table->boolean('isActive')->default(false);
             $table->boolean('allowEdit')->default(false);
+
+            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
             $table->string('insurance')->nullable();
         });
     }

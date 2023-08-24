@@ -46,17 +46,12 @@ class CustomerController extends Controller
      */
     public function fetchCustomerProfiles()
     {
-        // $pageSize = $size === 10 ? 0 : (int) $size;
-
-        // if ($pageSize) {
-        //     $customer_users = Customer::with('permissions')->paginate();
-        //     return response()->json(['success' => "success", 'customer_users' => $customer_users], 201);
-
-        // } else {
-
-        $customer_users = Customer::all();
-
         $authenticatedUser = Auth::user();
+
+        $assignedLocation = $authenticatedUser->location_id;
+
+        $customer_users = Customer::where("location_id", $assignedLocation)->with("customerLocation")->get();
+
 
         $activityLog = new ActivityLog();
 
@@ -133,7 +128,7 @@ class CustomerController extends Controller
         if ($user) {
             return response()->json(['success' => "success", 'user' => $user], 200);
         } else {
-            return response()->json(['error' => "error", 'message' => "No User found"], 200);
+            return response()->json(['error' => "error", 'message' => "No User found"], 400);
         }
     }
 

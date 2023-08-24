@@ -22,8 +22,8 @@ class AdminController extends Controller
      */
     public function test()
     {
-            $admin_users = Admin::get();
-            return response()->json(['success' => "success", 'data' => $admin_users], 200);
+        $admin_users = Admin::get();
+        return response()->json(['success' => "success", 'data' => $admin_users], 200);
 
     }
     public function fetchAdminProfiles()
@@ -41,11 +41,11 @@ class AdminController extends Controller
         $pageSize = 10;
 
         if ($pageSize) {
-            $admin_users = Admin::with('permissions')->paginate($pageSize);
+            $admin_users = Admin::with('location')->paginate($pageSize);
             return response()->json(['success' => "success", 'data' => $admin_users], 200);
 
         } else {
-            $admin_users = Admin::with('permissions')->paginate();
+            $admin_users = Admin::with('location')->paginate();
             return response()->json(['success' => "success", 'data' => $admin_users], 200);
 
         }

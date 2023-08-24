@@ -26,4 +26,8 @@ class Coupon extends Model
     {
         return $this->hasMany(CouponRecord::class);
     }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, "forUser");
+    }
 }

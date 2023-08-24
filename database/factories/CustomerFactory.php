@@ -23,9 +23,6 @@ class CustomerFactory extends Factory
         $emial_verified_at = $emial_verified ? $this->faker->dateTimeThisDecade('-1 years') : null;
         $gender = $this->faker->randomElement((["male", "female"]));
 
-
-
-
         do {
             $email = $this->faker->email();
         } while (in_array($email, $emails));
@@ -44,7 +41,7 @@ class CustomerFactory extends Factory
             'email_verified_at' => $emial_verified_at,
             'address' => $this->faker->streetAddress(),
             'city' => $this->faker->city(),
-            'state' => $this->faker->state(),
+            'location_id' => $this->faker->randomElement([1, 2, 3]),
             'password' => Hash::make("Password")
         ];
     }

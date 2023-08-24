@@ -24,8 +24,12 @@ class DriverController extends Controller
      */
     public function fetchDriverProfiles()
     {
-        $drivers = Driver::all();
         $authenticatedUser = Auth::user();
+        $assignedLocation = $authenticatedUser->location_id;
+
+        $drivers = Driver::where("location_id", $assignedLocation)->with("driverLocation")->get();
+
+
 
         $activityLog = new ActivityLog();
 

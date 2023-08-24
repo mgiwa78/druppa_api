@@ -14,18 +14,23 @@ class VendorItemController extends Controller
      */
     public function index()
     {
-           $authenticatedUser = Auth::user();
+        $authenticatedUser = Auth::user();
 
-           if($authenticatedUser->type==="Admin"){
- $vendorItems = VendorItem::all()->paginate();
-  return response()->json(['success' => "success", 'data' => $vendorItems], 200);
-           }  if($authenticatedUser->type==="Vendor"){
-             $vendorItems = VendorItem::where("vendor_id",$authenticatedUser->id)->paginate();
-              return response()->json(['success' => "success", 'data' => $vendorItems], 200);
-           }
-       
+        if ($authenticatedUser->type === "Admin" || $authenticatedUser->type === "Customer") {
 
-       
+            $vendorItems = VendorItem::with("vendor")->with("category")->paginate();
+            return response()->json(['success' => "success", 'data' => $vendorItems], 200);
+
+        }
+        if ($authenticatedUser->type === "Vendor") {
+
+            $vendorItems = VendorItem::where("vendor_id", $authenticatedUser->id)->with("category")->paginate();
+            return response()->json(['success' => "success", 'data' => $vendorItems], 200);
+
+        }
+
+
+
     }
 
     /**
@@ -59,13 +64,13 @@ class VendorItemController extends Controller
         }
 
         $newVendorItem->image = $profile;
-$newVendorItem->save();
+        $newVendorItem->save();
 
         return response()->json(['success' => "success", 'data' => $newVendorItem], 200);
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource. s
      */
     public function show(VendorItem $vendorItem, $id)
     {
@@ -94,7 +99,7 @@ $newVendorItem->save();
     public function update(UpdateVendorItemRequest $request)
     {
 
-     $id = $request->id;
+        $id = $request->id;
         $vendorItem = VendorItem::find($id)->first();
 
         $vendorItem->name = $request->name;

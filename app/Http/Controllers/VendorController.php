@@ -6,6 +6,8 @@ use App\Models\Vendor;
 use App\Http\Requests\StoreVendorRequest;
 use App\Http\Requests\UpdateVendorRequest;
 use App\Models\ActivityLog;
+use App\Models\CustomerOrder;
+use App\Models\VendorItem;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,9 +19,27 @@ class VendorController extends Controller
      */
     public function index()
     {
-        $vendors = Vendor::all();
+        $authenticatedUser = Auth::user();
+
+        $vendors = Vendor::with("customer")->whereHas('customer', function ($query) use ($authenticatedUser) {
+            $query->where('location_id', $authenticatedUser->location_id);
+        })->paginate();
+
 
         return response()->json(['success' => "success", 'data' => $vendors], 200);
+    }
+    public function getVendorStatics()
+    {
+        $authenticatedUser = Auth::user();
+        $vendorsItems = VendorItem::where("vendor_id", $authenticatedUser->id)->count();
+        $customerOrders = CustomerOrder::where("vendor_id", $authenticatedUser->id)->count();
+
+        $vendorStatic = [
+            "vendorsItems" => $vendorsItems,
+            "customerOrders" => $customerOrders,
+            "sales" => $customerOrders,
+        ];
+        return response()->json(['success' => "success", 'data' => $vendorStatic], 200);
     }
 
     /**

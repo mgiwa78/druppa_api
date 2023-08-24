@@ -46,7 +46,7 @@ class CouponController extends Controller
     public function index()
     {
         $coupons = Coupon::paginate();
-        return response()->json(['success' => "success", 'data' => $coupons], 201);
+        return response()->json(['success' => "success", 'data' => $coupons], 200);
 
     }
 
@@ -54,7 +54,7 @@ class CouponController extends Controller
     {
         $coupon = Coupon::findOrFail($id);
 
-        return response()->json(['success' => "success", 'data' => $coupon, 'message' => 'Coupon retrieved successfully.', ], 200);
+        return response()->json(['success' => "success", 'data' => $coupon, 'message' => 'Coupon retrieved successfully.',], 200);
     }
 
     public function getCouponCustomers($couponId)
@@ -115,7 +115,7 @@ class CouponController extends Controller
         $coupon = Coupon::findOrFail($id);
         $coupon->update($request->all());
 
-        return response()->json(['success' => "success", 'data' => $coupon, 'message' => 'Coupon updated successfully.', ], 200);
+        return response()->json(['success' => "success", 'data' => $coupon, 'message' => 'Coupon updated successfully.',], 200);
     }
 
     public function destroy($id)
@@ -123,7 +123,7 @@ class CouponController extends Controller
         $coupon = Coupon::findOrFail($id);
         $coupon->delete();
 
-        return response()->json(['success' => "success", 'message' => 'Coupon deleted successfully.', ], 200);
+        return response()->json(['success' => "success", 'message' => 'Coupon deleted successfully.',], 200);
     }
 
 

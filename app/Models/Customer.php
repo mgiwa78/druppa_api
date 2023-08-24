@@ -76,6 +76,14 @@ class Customer extends Authenticatable
     {
         return $this->hasOne(Wallet::class);
     }
+    public function assignedLocation()
+    {
+        return $this->hasOne(Admin::class);
+    }
+    public function customerLocation()
+    {
+        return $this->belongsTo(Location::class);
+    }
     public function payment()
     {
         return $this->hasMany(Payment::class);

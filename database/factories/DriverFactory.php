@@ -43,8 +43,9 @@ class DriverFactory extends Factory
             'phone_number' => $this->faker->phoneNumber(),
             'address' => $this->faker->streetAddress(),
             'type' => 'Driver',
+
+            'location_id' => $this->faker->randomElement([1, 2, 3]),
             'city' => $this->faker->city(),
-            'state' => $this->faker->state(),
             'isActive' => $this->faker->randomElement([false, true]),
             'licenseNumber' => $this->faker->randomNumber(),
             'licenseExpiration' => $this->faker->date(),

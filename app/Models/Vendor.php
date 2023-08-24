@@ -38,4 +38,8 @@ class Vendor extends Authenticatable
     {
         return $this->morphMany(ActivityLog::class, 'user');
     }
+    public function items()
+    {
+        return $this->hasMany(VendorItem::class);
+    }
 }

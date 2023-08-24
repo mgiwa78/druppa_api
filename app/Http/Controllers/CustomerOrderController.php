@@ -32,6 +32,24 @@ class CustomerOrderController extends Controller
         $activityLog->save();
         return response()->json(['success' => 'success', 'data' => $orders], 200);
     }
+    public function showVendorOrders()
+    {
+
+
+        $authenticatedUser = Auth::user();
+
+        if ($authenticatedUser->type === "Vendor") {
+            $activityLog = new ActivityLog();
+
+            $activityLog->user()->associate($authenticatedUser);
+            $orders = CustomerOrder::where("vendor_id", $authenticatedUser->id)->paginate();
+
+            $activityLog->description = "Access Customer Orders";
+
+            $activityLog->save();
+            return response()->json(['success' => 'success', 'data' => $orders], 200);
+        }
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -61,6 +79,57 @@ class CustomerOrderController extends Controller
         $customerOrder->dropoff_address = $request->dropoff_address;
         $customerOrder->total_payment = $request->total_payment;
         $customerOrder->dropoff_state = $request->dropoff_state;
+
+
+        $customerOrder->save();
+
+        $authenticatedUser = Auth::user();
+
+        $activityLog = new ActivityLog();
+
+        $activityLog->user()->associate($authenticatedUser);
+        $activityLog->data()->associate($customerOrder);
+
+
+        $activityLog->description = "Generated invoice";
+
+        $activityLog->save();
+
+        return response()->json([
+            "data" => $customerOrder
+        ], 201);
+    }
+    public function createResturantOrder(StoreCustomerOrderRequest $request)
+    {
+        $authenticatedUser = Auth::user();
+
+        $request->validated();
+
+        $customerOrder = new CustomerOrder;
+
+        $customerOrder->vendor_id = $request->vendor_id;
+
+
+        $customerOrder->customer_id = $request->customer_id;
+        $customerOrder->order_type = $request->order_type;
+
+        $customerOrder->payment_id = $request->payment_id;
+        $customerOrder->location_type = $request->location_type;
+
+        $customerOrder->shipment_description = $request->shipment_description;
+        $customerOrder->package_type = $request->package_type;
+        $customerOrder->coupon_id = $request->coupon_id;
+
+        $customerOrder->pickup_address = $request->pickup_address;
+        $customerOrder->origin = $request->origin;
+        $customerOrder->payment_type = $request->payment_type;
+
+        $customerOrder->pickup_state = $request->pickup_state;
+        $customerOrder->pickup_address = $request->pickup_address;
+        $customerOrder->dropoff_address = $request->dropoff_address;
+        $customerOrder->total_payment = $request->total_payment;
+        $customerOrder->dropoff_state = $request->dropoff_state;
+        $customerOrder->vendor_item_id = $request->vendor_item_id;
 
 
         $customerOrder->save();
@@ -191,7 +260,7 @@ class CustomerOrderController extends Controller
         if ($customerorder) {
             return response()->json(['success' => "success", 'data' => $customerorder], 200);
         } else {
-            return response()->json(['error' => "error", 'message' => "No customerorder found"], 200);
+            return response()->json(['error' => "error", 'message' => "No customer Order found"], 200);
         }
     }
     public function showCustomerOrder($id)
@@ -202,7 +271,7 @@ class CustomerOrderController extends Controller
         if ($customerorder) {
             return response()->json(['success' => "success", 'data' => $customerorder], 200);
         } else {
-            return response()->json(['error' => "error", 'message' => "No customerorder found"], 200);
+            return response()->json(['error' => "error", 'message' => "No customer Order found"], 200);
         }
     }
     /**

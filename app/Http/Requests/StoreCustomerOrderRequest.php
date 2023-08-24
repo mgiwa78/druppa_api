@@ -26,7 +26,7 @@ class StoreCustomerOrderRequest extends FormRequest
             'payment_id' => ['required'],
             'package_type' => ['required'],
             'payment_type' => ['required'],
-            'shipment_description' => ['required'],
+            'shipment_description' => ['sometimes'],
             'origin' => ['required'],
             'delivery_instructions' => ['required'],
             'pickup_address' => ['required'],

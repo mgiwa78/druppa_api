@@ -24,10 +24,11 @@ return new class extends Migration {
             $table->string("profile")->nullable();
             $table->decimal('balance', 8, 2)->default(0);
             $table->string("city")->nullable();
-            $table->string("state")->nullable();
+            $table->unsignedBigInteger("location_id")->nullable();
             $table->rememberToken();
             $table->timestamps();
 
+            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('verify_token')->nullable();
         });

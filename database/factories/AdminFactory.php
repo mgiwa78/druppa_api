@@ -18,7 +18,7 @@ class AdminFactory extends Factory
     public function definition(): array
     {
 
-      
+
         $emial_verified = $this->faker->randomElement(([true, false]));
 
         $emial_verified_at = $emial_verified ? $this->faker->dateTimeThisDecade('-1 years') : null;
@@ -26,7 +26,7 @@ class AdminFactory extends Factory
         $type = $this->faker->randomElement((["User", "Driver", "Admin"]));
 
 
-  $emails = [];
+        $emails = [];
 
         do {
             $email = $this->faker->safeEmail();
@@ -43,6 +43,8 @@ class AdminFactory extends Factory
             'address' => $this->faker->address(),
             'firstName' => $this->faker->firstName($gender),
             'lastName' => $this->faker->lastName(),
+            'super' => true,
+            'location_id' => $this->faker->randomElement([1, 2, 3]),
             'email' => $email,
             'last_login' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'city' => $this->faker->city(),

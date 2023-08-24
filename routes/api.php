@@ -19,6 +19,8 @@ use App\Http\Controllers\CategoryProductController;
 use App\Http\Controllers\CouponRecordsController;
 use App\Http\Controllers\InventoryDeliveryRequestController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\RetainershipController;
+use App\Http\Controllers\RetainershipInstanceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VendorItemCategoryController;
@@ -50,10 +52,10 @@ Route::get('/test', [AdminController::class, 'test']);
 Route::middleware('auth:sanctum')->group(function () {
 
     /*
-    |--------------------------------------------------------------------------
-    | Customer Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Customer Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'customers'], function () {
         Route::get('/', [CustomerController::class, 'fetchCustomerProfiles']);
@@ -69,10 +71,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | Vendor Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Vendor Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'vendors'], function () {
         Route::get('/', [VendorController::class, 'index']);
@@ -80,19 +82,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [VendorController::class, 'edit']);
     });
     /*
-    |--------------------------------------------------------------------------
-    | VendorItemCategories Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | VendorItemCategories Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'vendorItemCategories'], function () {
         Route::get('/', [VendorItemCategoryController::class, 'index']);
     });
     /*
-    |--------------------------------------------------------------------------
-    | VendorItem Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | VendorItem Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'vendorItem'], function () {
         Route::post('/', [VendorItemController::class, 'store']);
@@ -101,10 +103,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | inventoryDeliveryRequest Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | inventoryDeliveryRequest Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'inventoryDeliveryRequest'], function () {
         Route::get('/', [InventoryDeliveryRequestController::class, 'index']);
@@ -117,10 +119,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-   |--------------------------------------------------------------------------
-   | Wallet Routes
-   |--------------------------------------------------------------------------
-   */
+       |--------------------------------------------------------------------------
+       | Wallet Routes
+       |--------------------------------------------------------------------------
+       */
 
     Route::group(['prefix' => 'wallet'], function () {
         Route::get('/{id}', [WalletController::class, 'balance']);
@@ -128,10 +130,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/deposit', [WalletController::class, 'deposit']);
     });
     /*
-   |--------------------------------------------------------------------------
-   | WalletTransactions Routes
-   |--------------------------------------------------------------------------
-   */
+       |--------------------------------------------------------------------------
+       | WalletTransactions Routes
+       |--------------------------------------------------------------------------
+       */
 
     Route::group(['prefix' => 'walletTransactions'], function () {
         Route::get('/myCummulativeTransactions', [WalletTransactionsController::class, 'myCummulativeTransactions']);
@@ -139,10 +141,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | Delivery Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Delivery Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'deliveries'], function () {
         Route::get('/', [DeliveryController::class, 'index']);
@@ -168,10 +170,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-|--------------------------------------------------------------------------
-| Invoice Routes
-|--------------------------------------------------------------------------
-*/
+    |--------------------------------------------------------------------------
+    | Invoice Routes
+    |--------------------------------------------------------------------------
+    */
 
     Route::group(['prefix' => 'invoice'], function () {
         Route::get('/', [InvoiceController::class, 'index']);
@@ -179,22 +181,42 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/customer/{size}', [InvoiceController::class, 'getCustomerInvoices']);
     });
     /*
-|--------------------------------------------------------------------------
-| Misc Routes
-|--------------------------------------------------------------------------
-*/
+    |--------------------------------------------------------------------------
+    | Invoice Routes
+    |--------------------------------------------------------------------------
+        */
+
+    Route::group([
+        'prefix' => 'retainerships'
+    ], function () {
+        Route::get('', [RetainershipController::class, 'index']);
+        Route::post('', [RetainershipController::class, 'create']);
+        Route::get('/{id}', [RetainershipController::class, 'show']);
+        Route::get('/{id}/confirm-exceeded-orders', [RetainershipController::class, 'confirmExceededOrders']);
+        Route::get('/{customer_id}/instances', [RetainershipInstanceController::class, 'getInstancesByCustomer']);
+        Route::get('/{retainership_id}/instances', [RetainershipInstanceController::class, 'getInstancesByRetainership']);
+        Route::post('/{retainership_id}/instances', [RetainershipInstanceController::class, 'createInstance']);
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Misc Routes
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/driverStatics', [DriverController::class, 'getDriverStatics']);
+    Route::get('/vendorStatics', [VendorController::class, 'getVendorStatics']);
     Route::get('/adminStatics', [AdminController::class, 'getAdminStatics']);
     Route::get('/fetchDriverDeliveries', [DeliveryController::class, 'getDriverDeliveries']);
     Route::get('/getPendingOrders/{size}', [CustomerOrderController::class, 'showPendingOrders']);
     Route::post('/stateUpdate', [DriverController::class, 'stateUpdate']);
 
     /*
-    |--------------------------------------------------------------------------
-    | Resturant Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Resturant Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'restaurants'], function () {
         // Restaurants
@@ -220,10 +242,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | Inventory Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Inventory Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'inventory'], function () {
         Route::get('/', [InventoryController::class, 'index']);
@@ -241,10 +263,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | Warehousing Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Warehousing Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'warehouses'], function () {
         Route::get('/', [WarehouseController::class, 'index']);
@@ -260,24 +282,26 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | CustomerOrder Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | CustomerOrder Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'customerorders'], function () {
         Route::get('/', [CustomerOrderController::class, 'index']);
         Route::get('/{id}', [CustomerOrderController::class, 'show']);
         Route::post('/', [CustomerOrderController::class, 'create']);
+        Route::get('/vendor/orders', [CustomerOrderController::class, 'showVendorOrders']);
+        Route::post('/resturant', [CustomerOrderController::class, 'createResturantOrder']);
         Route::get('/customer/{id}', [CustomerOrderController::class, 'showCustomerOrder']);
         Route::get('all/customer/{size}', [CustomerOrderController::class, 'showCustomersOrders']);
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | Retainership Customers Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Retainership Customers Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'retainership-customers'], function () {
         Route::get('/', [RetainershipCustomerController::class, 'index']);
@@ -288,10 +312,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | Cupon Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Cupon Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'coupon'], function () {
         Route::post('/', [CouponController::class, 'store']);
@@ -305,10 +329,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | Coupon Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Coupon Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'coupon'], function () {
         Route::post('/', [CouponRecordsController::class, 'create']);
@@ -316,10 +340,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | Admin Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Admin Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'admin'], function () {
         Route::get('/', [AdminController::class, 'fetchAdminProfiles']);
@@ -331,10 +355,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | Driver Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Driver Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'drivers'], function () {
         Route::get('/', [DriverController::class, 'fetchDriverProfiles']);
@@ -348,20 +372,20 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     /*
-    |--------------------------------------------------------------------------
-    | Activity Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Activity Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'activity'], function () {
         Route::get('/', [ActivityLogController::class, 'getUserActivityLog']);
         Route::get('/all', [ActivityLogController::class, 'getAllActivityLog']);
     });
     /*
-    |--------------------------------------------------------------------------
-    | Payments Routes
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Payments Routes
+        |--------------------------------------------------------------------------
+        */
 
     Route::group(['prefix' => 'payment'], function () {
         Route::post('/', [PaymentController::class, 'store']);

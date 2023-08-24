@@ -12,9 +12,9 @@ class Admin extends Authenticatable
 {
     use HasFactory, HasApiTokens;
 
-    public function permissions()
+    public function location()
     {
-        return $this->hasMany((Permission::class));
+        return $this->belongsTo(Location::class);
     }
 
     public function activityData(): MorphMany
