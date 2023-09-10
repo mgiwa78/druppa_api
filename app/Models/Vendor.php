@@ -42,4 +42,8 @@ class Vendor extends Authenticatable
     {
         return $this->hasMany(VendorItem::class);
     }
+    public function customer()
+    {
+        return $this->hasMany(VendorItem::class);
+    }
 }

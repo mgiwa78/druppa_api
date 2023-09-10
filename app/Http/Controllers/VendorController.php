@@ -21,9 +21,7 @@ class VendorController extends Controller
     {
         $authenticatedUser = Auth::user();
 
-        $vendors = Vendor::with("customer")->whereHas('customer', function ($query) use ($authenticatedUser) {
-            $query->where('location_id', $authenticatedUser->location_id);
-        })->paginate();
+        $vendors = Vendor::paginate();
 
 
         return response()->json(['success' => "success", 'data' => $vendors], 200);
