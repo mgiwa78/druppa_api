@@ -30,13 +30,14 @@ class StoreDriverRequest extends FormRequest
             'phone_number' => 'required|string',
             'type' => 'required|string|in:Driver,regular',
             'city' => 'required|string',
+            'address' => 'required|string',
             'state' => 'required|string',
             'licenseNumber' => 'required|string',
             'licenseExpiration' => 'required|date',
             'vehicleMake' => 'required|string',
             'vehicleModel' => 'required|string',
             'licensePlate' => 'required|string',
-            'insurance' => 'required|string',
+            'insurance' => 'string',
             'password' => 'required|min:6',
         ];
     }

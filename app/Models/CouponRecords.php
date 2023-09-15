@@ -9,7 +9,7 @@ class CouponRecords extends Model
 {
     use HasFactory;
 
-    public $fillable = ['customer_id'];
+    public $fillable = ['customer_id', 'coupon_id'];
 
 
     public function coupon()

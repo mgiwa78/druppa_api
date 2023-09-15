@@ -24,8 +24,9 @@ class VendorSeeder extends Seeder
                 'email' => "vendor@mail.com",
                 'password' => bcrypt("Password"),
                 'vendorName' => "Abuja Central Food Stop",
-                'contactInformation' => "acfs@mail.com",
+                'phone_number' => "0291234494",
                 'address' => "house 12, plot 3, maitama",
+                'city' => "house 12, plot 3, maitama",
             ]);
     }
 }

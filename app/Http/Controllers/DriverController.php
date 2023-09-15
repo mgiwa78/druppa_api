@@ -94,6 +94,8 @@ class DriverController extends Controller
         $driver->title = $validatedData['title'];
         $driver->phone_number = $validatedData['phone_number'];
         $driver->type = $validatedData['type'];
+        $driver->address = $validatedData['address'];
+
         $driver->city = $validatedData['city'];
         $driver->state = $validatedData['state'];
         $driver->licenseNumber = $validatedData['licenseNumber'];
@@ -101,7 +103,6 @@ class DriverController extends Controller
         $driver->vehicleMake = $validatedData['vehicleMake'];
         $driver->vehicleModel = $validatedData['vehicleModel'];
         $driver->licensePlate = $validatedData['licensePlate'];
-        $driver->insurance = $validatedData['insurance'];
         $driver->password = bcrypt($validatedData['password']);
 
         $driver->save();

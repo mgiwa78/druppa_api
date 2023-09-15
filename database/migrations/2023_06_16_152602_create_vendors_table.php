@@ -16,9 +16,11 @@ return new class extends Migration {
             $table->string('password');
             $table->string('type')->default("Vendor");
             $table->longText('email')->unique();
-            $table->longText('vendorName')->unique();;
-            $table->string('contactInformation')->nullable();
+            $table->longText('profile')->nullable();
+            $table->longText('vendorName')->unique();
+            $table->string('phone_number')->nullable();
             $table->string('address')->nullable();
+            $table->string('city')->nullable();
         });
     }
 

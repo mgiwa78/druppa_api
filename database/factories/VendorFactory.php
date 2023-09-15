@@ -37,8 +37,9 @@ class VendorFactory extends Factory
             'password' => Hash::make("Password"),
             'email' => $email,
             'vendorName' => $this->faker->company,
-            'contactInformation' => $this->faker->address,
             'address' => $this->faker->address(),
+            'city' => $this->faker->city(),
+            'phone_number' => $this->faker->phoneNumber(),
         ];
     }
 }

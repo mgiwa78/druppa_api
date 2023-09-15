@@ -8,9 +8,11 @@ use App\Models\CustomerActivity;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Requests\StoreInventoryRequest;
+use App\Http\Requests\StoreInventoryRequestRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\ActivityLog;
+use App\Models\InventoryRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,21 +27,35 @@ class CustomerController extends Controller
      */
 
 
-    public function requestInventory(StoreInventoryRequest $request, $id)
+    public function requestInventory(StoreInventoryRequestRequest $request, $id)
     {
         // Retrieve the customer with the given ID
         $customer = Customer::findOrFail($id);
 
         // Create a new inventory for the customer
-        $inventory = new Inventory();
-        $inventory->customer_id = $customer->id;
-        $inventory->product_description = $request->product_description;
-        $inventory->quantity = $request->quantity;
-        $inventory->warehouse_id = $request->warehouse_id;
-        $inventory->save();
+        $inventory_request = new InventoryRequest();
+        $inventory_request->customer_id = $customer->id;
+
+        $inventory_request->request_description = $request->request_description;
+        $inventory_request->quantity = $request->quantity;
+        $inventory_request->pickup_address = $request->pickup_address;
+
+        $inventory_request->save();
 
         // Return a response indicating the success
-        return response()->json(['success' => true, 'data' => $inventory], 201);
+        return response()->json(['success' => true, 'data' => $inventory_request], 201);
+    }
+    public function getInventoryRequests()
+    {
+        $authenticatedUser = Auth::user();
+        // Retrieve the customer with the given ID
+
+        // Create a new inventory for the customer
+        $inventory_request = InventoryRequest::where("customer_id", "=", $authenticatedUser->id)->get();
+
+
+
+        return response()->json(['success' => true, 'data' => $inventory_request], 200);
     }
     /**
      * Display a listing of thCustomere resource.
@@ -94,7 +110,6 @@ class CustomerController extends Controller
         $customer->phone_number = $request->phone_number;
         $customer->address = $request->address;
         $customer->city = $request->city;
-        $customer->state = $request->state;
         $customer->password = bcrypt($request->password);
 
         $customer->save();
@@ -166,7 +181,7 @@ class CustomerController extends Controller
     // }
     public function updateCustomerProfile(UpdateCustomerRequest $request)
     {
-        $request->validated();
+
 
         $authenticatedUser = Auth::user();
         $customer = Customer::find($authenticatedUser->id);
@@ -193,11 +208,9 @@ class CustomerController extends Controller
             'lastName' => $request->lastName,
             'gender' => $request->gender,
             'title' => $request->title,
-            'email' => $request->email,
             'phone_number' => $request->phone_number,
             'address' => $request->address,
             'city' => $request->city,
-            'state' => $request->state,
             'profile' => $profile,
         ]);
 
@@ -230,7 +243,6 @@ class CustomerController extends Controller
         if (!$customer) {
             return response()->json(['error' => 'Customer not found'], 404);
         }
-
         $customer->delete();
 
         return response()->json(['success' => 'Customer deleted successfully'], 200);

@@ -68,6 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('count/getCount', [CustomerController::class, 'getCustomerCount']);
         // Customer Request For Inventory
         Route::post('/{id}/request-inventory', [CustomerController::class, 'requestInventory']);
+        Route::get('/inventory/inventory-request', [CustomerController::class, 'getInventoryRequests']);
     });
 
     /*
@@ -318,7 +319,7 @@ Route::middleware('auth:sanctum')->group(function () {
         */
 
     Route::group(['prefix' => 'coupon'], function () {
-        Route::post('/', [CouponController::class, 'store']);
+        Route::post('/create/new', [CouponController::class, 'store']);
         Route::get('/', [CouponController::class, 'index']);
         Route::post('/verify', [CouponController::class, 'validateCoupon']);
         Route::get('/{id}', [CouponController::class, 'show']);

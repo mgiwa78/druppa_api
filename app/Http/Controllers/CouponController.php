@@ -12,32 +12,48 @@ use Carbon\Carbon;
 
 class CouponController extends Controller
 {
-    public function store(StoreCouponRequest $request)
+    public function store(Request $request)
     {
 
+        // return response()->json(['success' => "success", 'data' => $request->code], 201);
 
 
-        $couponData = $request->except('forUser');
-        $coupon = Coupon::create($couponData);
+        $coupon = new Coupon;
 
-        $coupon->percentage_discount = $request->percentage_discount;
+        $coupon->code = $request->code;
+        $coupon->validUntil = $request->validUntil;
+        $coupon->validFrom = $request->validFrom;
+        $coupon->maxUses = $request->maxUses;
+        $coupon->couponType = $request->couponType;
+        $coupon->reductionAmount = $request->reductionAmount;
+        $coupon->percentageDiscount = $request->percentageDiscount;
 
-        $couponRecord = new CouponRecords();
 
+        $coupon->save();
+
+        return response()->json(['success' => "success", 'data' => $coupon], 201);
+
+        $couponRecord = new CouponRecords;
         foreach ($request->forUser as $key => $user) {
+            return response()->json(['success' => "success", 'data' => $user], 201);
+
             $customer = Customer::find($user);
-            $wallet = $customer->wallet;
+            // $wallet = $customer->wallet;
 
-            if ($wallet->balance < $coupon->percentage_discount) {
-                return response()->json(['message' => 'Insufficient balance to assign coupon.'], 400);
+            // if ($wallet->balance < $coupon->percentage_discount) {
+            //     return response()->json(['message' => 'Insufficient balance to assign coupon.'], 400);
+            // }
+
+            // $wallet->withdraw($coupon->percentage_discount);
+
+            if ($customer) {
+                $couponRecord->customer_id = $user;
+                $couponRecord->coupon_id = $coupon->id;
             }
-
-            $wallet->withdraw($coupon->percentage_discount);
-            $couponRecord->customer_id = $user;
-            $couponRecord->coupon_id = $coupon->id;
+            $couponRecord->save();
         }
 
-        $couponRecord->save();
+
 
 
         return response()->json(['success' => "success", 'data' => $coupon], 201);

@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Requests\UpdateDriverRequest;
 use App\Http\Requests\UpdateEmailRequest;
 use App\Http\Requests\UpdatePasswordRequest;
+use App\Http\Requests\UpdateVendorRequest;
 use App\Models\ActivityLog;
 use App\Models\Admin;
 use App\Models\Customer;
@@ -138,7 +139,7 @@ class AuthController extends Controller
         return response()->json(['user' => $user], 200);
 
     }
-    public function updateProfile(Request $request, UpdateDriverRequest $driverRequest, UpdateCustomerRequest $customerRequest)
+    public function updateProfile(Request $request)
     {
 
         $authenticatedUser = Auth::user();
@@ -155,16 +156,12 @@ class AuthController extends Controller
                 'gender' => 'string|max:150',
                 'title' => 'string|max:150',
                 'city' => 'string|max:150',
-                'state' => 'string|max:150',
 
             ]);
 
             if ($validation->fails()) {
                 return response()->json(['error' => $validation->errors()], 422);
             } else {
-
-
-
 
                 $admin->firstName = $request->firstName;
                 $admin->lastName = $request->lastName;
@@ -218,35 +215,34 @@ class AuthController extends Controller
             }
         }
         if ("Driver" === $authenticatedUser->type) {
-            $driverRequest->validated();
+            $request->validated();
             $driver = Driver::find($authenticatedUser->id);
 
             if ($driver) {
 
                 $profile = NULL;
 
-                if ($driverRequest->file('profile')) {
+                if ($request->file('profile')) {
 
-                    $file = $driverRequest->file('profile');
+                    $file = $request->file('profile');
                     $file_name = hexdec(uniqid()) . '.' . $file->extension();
                     $file->move('./storage/druppa_customer_profiles', $file_name);
                     $profile = '/storage/druppa_customer_profiles/' . $file_name;
                 }
 
-                $driver->lastName = $driverRequest->lastName;
-                $driver->firstName = $driverRequest->firstName;
-                $driver->gender = $driverRequest->gender;
-                $driver->title = $driverRequest->title;
-                $driver->phone_number = $driverRequest->phone_number;
-                $driver->city = $driverRequest->city;
-                $driver->state = $driverRequest->state;
+                $driver->lastName = $request->lastName;
+                $driver->firstName = $request->firstName;
+                $driver->gender = $request->gender;
+                $driver->title = $request->title;
+                $driver->phone_number = $request->phone_number;
+                $driver->city = $request->city;
 
-                $driver->licenseNumber = $driverRequest->licenseNumber;
-                $driver->licenseExpiration = $driverRequest->licenseExpiration;
-                $driver->vehicleMake = $driverRequest->vehicleMake;
-                $driver->vehicleModel = $driverRequest->vehicleModel;
-                $driver->licensePlate = $driverRequest->licensePlate;
-                $driver->insurance = $driverRequest->insurance;
+                $driver->licenseNumber = $request->licenseNumber;
+                $driver->licenseExpiration = $request->licenseExpiration;
+                $driver->vehicleMake = $request->vehicleMake;
+                $driver->vehicleModel = $request->vehicleModel;
+                $driver->licensePlate = $request->licensePlate;
+                $driver->insurance = $request->insurance;
                 $driver->profile = $profile;
 
 
@@ -270,27 +266,26 @@ class AuthController extends Controller
             }
         }
         if ("Customer" === $authenticatedUser->type) {
-            $customerRequest->validated();
+            $request->validated();
 
             $customer = Customer::find($authenticatedUser->id);
 
 
 
-            if ($customerRequest->file('profile')) {
+            if ($request->file('profile')) {
 
-                $file = $customerRequest->file('profile');
+                $file = $request->file('profile');
                 $file_name = hexdec(uniqid()) . '.' . $file->extension();
                 $file->move('./storage/druppa_customer_profiles', $file_name);
                 $customer->profile = '/storage/druppa_customer_profiles/' . $file_name;
             }
 
-            $customer->firstName = $customerRequest->firstName;
-            $customer->lastName = $customerRequest->lastName;
-            $customer->phone_number = $customerRequest->phone_number;
-            $customer->address = $customerRequest->address;
-            $customer->type = $customerRequest->type;
-            $customer->gender = $customerRequest->gender;
-            $customer->state = $customerRequest->state;
+            $customer->firstName = $request->firstName;
+            $customer->lastName = $request->lastName;
+            $customer->phone_number = $request->phone_number;
+            $customer->address = $request->address;
+            $customer->type = $request->type;
+            $customer->gender = $request->gender;
 
             $activityLog = new ActivityLog();
 
@@ -304,6 +299,40 @@ class AuthController extends Controller
 
 
             return response()->json(['message' => 'Customer updated successfully']);
+
+        }
+        if ("Vendor" === $authenticatedUser->type) {
+
+            $vendor = Vendor::find($authenticatedUser->id);
+
+
+
+            if ($request->file('profile')) {
+
+                $file = $request->file('profile');
+                $file_name = hexdec(uniqid()) . '.' . $file->extension();
+                $file->move('./storage/druppa_customer_profiles', $file_name);
+                $vendor->profile = '/storage/druppa_customer_profiles/' . $file_name;
+            }
+
+            $vendor->vendorName = $request->vendorName;
+            $vendor->phone_number = $request->phone_number;
+            $vendor->address = $request->address;
+            $vendor->type = $request->type;
+            $vendor->city = $request->city;
+
+            $activityLog = new ActivityLog();
+
+            $vendor->save();
+
+            $activityLog->user()->associate($authenticatedUser);
+            $activityLog->data()->associate($vendor);
+
+            $activityLog->description = "Vendor Profile Modification";
+            $activityLog->save();
+
+
+            return response()->json(['message' => 'Vendor updated successfully']);
 
         }
 
